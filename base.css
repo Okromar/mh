@@ -1,0 +1,74 @@
+/* base.css — styles d'origine : scrollbar, impression A4, lettres */
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1ede6;
+}
+::-webkit-scrollbar-thumb {
+  background: #c7beaf;
+  border-radius: 3px;
+}
+
+/* Print Style Optimization for Clean A4 CV Export */
+@page {
+  size: A4 portrait;
+  margin: 12mm 15mm;
+}
+
+@media print {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-size: 9.5pt !important;
+    line-height: 1.35 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+  a {
+    text-decoration: underline !important;
+    color: #000 !important;
+  }
+  .shadow-custom, .backdrop-blur-md {
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+}
+
+.print-only {
+  display: none;
+}
+
+/* Letter styling reminiscent of meliketurgut.com */
+.letter-col {
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.letter-col:hover .letter-glyph {
+  transform: translateY(-4px);
+  color: #9b2c2c;
+}
+.letter-col:hover .letter-sub {
+  opacity: 1;
+  transform: translateY(0);
+  color: #111827;
+  border-top-color: #111827;
+}
+.active-letter .letter-glyph {
+  color: #9b2c2c;
+  transform: translateY(-3px);
+}
+.active-letter .letter-sub {
+  opacity: 1;
+  font-weight: 600;
+  border-top-color: #9b2c2c;
+  color: #9b2c2c;
+}
