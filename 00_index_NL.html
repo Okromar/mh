@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="nl" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marko Cordi — Interactive Editorial CV & Portfolio</title>
+
+  <!-- Tailwind CSS & Configuration -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="js/config.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+
+  <!-- Feuilles de style séparées -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/ascii-theme.css">
+
+  <style>
+    /* Styles pour la carte M (Profil) Whiteboard transformée en iframe zoomable & pannable */
+    .wb-card-m-iframe-wrap {
+      position: relative;
+      width: 100%;
+      height: 580px;
+      background: #000;
+      border: 1px solid #222;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+    .wb-m-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.45rem 0.75rem;
+      background: #0a0a0a;
+      border-bottom: 1px solid #262626;
+      color: #d4d4d4;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+    .wb-m-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .wb-m-btn {
+      background: #141414;
+      color: #f5f5f5;
+      border: 1px solid #3a3a3a;
+      padding: 0.2rem 0.55rem;
+      font-family: inherit;
+      font-size: 11px;
+      line-height: 1.2;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .wb-m-btn:hover {
+      background: #fff;
+      color: #000;
+      border-color: #fff;
+    }
+    .wb-m-readout {
+      min-width: 3.4rem;
+      text-align: center;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .wb-m-viewport {
+      position: relative;
+      flex: 1 1 auto;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+      touch-action: none;
+    }
+    .wb-m-scaler {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1280px;
+      height: 760px;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+    .wb-m-scaler iframe {
+      width: 1280px;
+      height: 760px;
+      border: 0;
+      display: block;
+      background: #000;
+    }
+    .wb-m-shield {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      cursor: grab;
+      display: none;
+    }
+    .wb-m-viewport.is-zoomed .wb-m-shield {
+      display: block;
+    }
+    .wb-m-viewport.is-dragging .wb-m-shield {
+      cursor: grabbing;
+    }
+    .wb-m-hint {
+      position: absolute;
+      bottom: 0.55rem;
+      right: 0.7rem;
+      z-index: 15;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: #a3a3a3;
+      padding: 0.18rem 0.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      pointer-events: none;
+    }
+    .wb-card-m-wide {
+      width: min(94vw, 980px) !important;
+      max-width: 96vw !important;
+    }
+
+    /* ===== Camouflage + quasi plein écran, pour toutes les cartes iframe (M, A, R, O) ===== */
+    .wb-card-camo { background: var(--camo, #000) !important; border-color: rgba(128,128,128,.25) !important; }
+    .wb-card-camo > :not(.wb-body) { background: var(--camo, #000) !important; border-color: transparent !important; }
+    .wb-card-camo[data-camo="dark"] > :not(.wb-body) { color: #d4d4d4 !important; }
+    .wb-card-camo .wb-body { background: var(--camo, #000) !important; padding: 0 !important; overflow: hidden !important; }
+    .wb-card-camo .wb-card-m-iframe-wrap, .wb-card-camo .wb-m-viewport, .wb-card-camo .wb-m-scaler iframe { background: var(--camo, #000); }
+    .wb-card-full { width: 96vw !important; max-width: 96vw !important; }
+    .wb-card-full { height: auto !important; max-height: none !important; }
+    .wb-card-full .wb-body { height: auto !important; max-height: none !important; flex: none !important; }
+    .wb-card-full.wb-card-camo > :not(.wb-body) { display: none !important; }   /* l'en-tête et le pied de la carte sont repris dans la barre d'outils */
+    .wb-m-nav { margin-right: .5rem; padding-right: .5rem; border-right: 1px solid #333; display: flex; gap: .35rem; }
+    .wb-m-hint { transition: opacity .6s; }
+    .wb-m-viewport.is-dragging .wb-m-hint, .wb-m-hint.gone { opacity: 0; }
+
+    /* ===== Invitation à appuyer sur les lettres + noms lisibles sous les lettres ===== */
+    .mk-cta{display:flex;flex-direction:column;align-items:center;gap:.5rem;margin:0 auto 1rem;text-align:center}
+    .mk-cta-main{display:inline-flex;align-items:center;gap:.6rem;padding:.65rem 1.3rem;border-radius:999px;background:#171717;color:#fff;font:600 clamp(13px,2.4vw,18px)/1.2 'JetBrains Mono',monospace;letter-spacing:.02em;box-shadow:0 6px 18px rgba(0,0,0,.18);animation:mk-pop 2.2s ease-in-out infinite}
+    @keyframes mk-pop{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    .mk-cta-langs{display:flex;flex-wrap:wrap;justify-content:center;gap:.35rem .5rem;font:500 clamp(11px,1.8vw,13px)/1.2 'JetBrains Mono',monospace;color:#737373}
+    .mk-l{padding:.2rem .6rem;border:1px solid #d4d4d4;border-radius:999px;background:rgba(255,255,255,.7);transition:all .2s}
+    .mk-l b{font-weight:700;margin-right:.3rem;color:#171717}
+    .mk-l.on{background:#171717;color:#fff;border-color:#171717}.mk-l.on b{color:#fbbf24}
+    .letter-col .letter-sub{padding-top:.6rem}
+    .letter-col .letter-sub span[data-mk]{display:block;font-size:clamp(8.5px,2.1vw,17px);line-height:1.15;font-weight:700;letter-spacing:.01em;text-transform:uppercase;color:#262626;overflow-wrap:anywhere;text-decoration:underline dotted #a3a3a3;text-underline-offset:.28em;text-decoration-thickness:1.5px}
+    .letter-col:hover .letter-sub span[data-mk],.letter-col:focus-visible .letter-sub span[data-mk]{text-decoration-style:solid;text-decoration-color:#171717}
+    .letter-col .letter-sub .font-semibold{font-size:clamp(9px,1.6vw,12px)}
+    @media (prefers-reduced-motion:reduce){.mk-cta-main{animation:none}}
+  </style>
+</head>
+<body class="bg-[#FAF8F5] text-ink font-sans min-h-screen flex flex-col justify-between selection:bg-amber-100 selection:text-ink">
+
+  <!-- ================= TOP NAVIGATION / BARRE HAUTE ================= -->
+  <header class="w-full px-6 md:px-12 py-5 flex items-center justify-between border-b border-borderSubtle bg-[#FAF8F5]/90 backdrop-blur-sm sticky top-0 z-30 no-print">
+    <div class="flex items-center space-x-3">
+      <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+      <span class="text-xs uppercase tracking-widest font-mono text-inkLight" id="status-badge">Beschikbaar · Brussel / Opleiding</span>
+    </div>
+
+    <!-- Quick Actions & Language Switcher -->
+    <div class="flex items-center space-x-4 md:space-x-6 text-xs font-mono">
+      <!-- Language Pill Switcher -->
+      <div class="inline-flex rounded-full border border-borderSubtle bg-white/70 p-0.5 shadow-sm">
+        <button onclick="setLanguage('fr')" id="lang-fr" class="px-3 py-1 rounded-full text-xs font-semibold transition-all text-inkLight hover:text-ink">FR</button>
+        <button onclick="setLanguage('nl')" id="lang-nl" class="px-3 py-1 rounded-full text-xs font-semibold transition-all bg-ink text-white">NL</button>
+        <button onclick="setLanguage('en')" id="lang-en" class="px-3 py-1 rounded-full text-xs font-semibold transition-all text-inkLight hover:text-ink">EN</button>
+      </div>
+
+      <!-- PDF Export Button -->
+      <button onclick="openPrintModal()" class="hidden sm:inline-flex items-center space-x-1.5 px-3.5 py-1.5 border border-ink/20 hover:border-ink rounded-full transition-all text-ink hover:bg-ink hover:text-white group">
+        <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+        <span data-i18n="nav.print">PDF / A4</span>
+      </button>
+
+      <!-- Contact Direct Link -->
+      <a href="mailto:contact@marko.cordi.eu?subject=Contact%20Recrutement%20-%20Marko%20Cordi" class="inline-flex items-center space-x-1 px-3 py-1.5 bg-ink text-white rounded-full hover:bg-neutral-800 transition">
+        <i data-lucide="mail" class="w-3.5 h-3.5 mr-1"></i>
+        <span data-i18n="nav.contactMe">Contacteer mij</span>
+      </a>
+    </div>
+  </header>
+
+
+  <!-- ================= MAIN EDITORIAL HERO / CENTERPIECE ================= -->
+  <main class="flex-1 flex flex-col justify-center items-center px-4 md:px-8 py-10 max-w-7xl mx-auto w-full no-print">
+
+    <!-- Subtitle & Role Positioning -->
+    <div class="text-center mb-6 md:mb-10">
+      <p class="font-mono text-xs md:text-sm tracking-[0.3em] uppercase text-neutral-500 mb-2" data-i18n="hero.role">
+        PRODUCT-CV & INTERACTIEF PORTFOLIO
+      </p>
+    </div>
+
+    <!-- Invitation : appuyer sur les lettres (FR · NL · EN) -->
+    <div class="mk-cta" role="note">
+      <span class="mk-cta-main"><i data-lucide="mouse-pointer-click" class="w-5 h-5"></i><span data-mk="hero.cta">Druk op een letter om een sectie te openen</span></span>
+      <span class="mk-cta-langs" aria-label="FR NL EN">
+        <span class="mk-l" data-l="fr"><b>FR</b> Appuyez sur une lettre</span>
+        <span class="mk-l" data-l="nl"><b>NL</b> Druk op een letter</span>
+        <span class="mk-l" data-l="en"><b>EN</b> Tap a letter</span>
+      </span>
+    </div>
+
+    <!-- ================= THE INTERACTIVE NAME GRID (MARKO + CORDI) ================= -->
+    <div class="w-full max-w-4xl my-4 text-center">
+      
+      <!-- Primary Editorial Name: MARKO (5 Columns) -->
+      <div class="grid grid-cols-5 gap-2 sm:gap-4 md:gap-6 text-center select-none">
+        <!-- Letter M -->
+        <button onclick="openSection('M')" id="btn-M" class="letter-col group flex flex-col items-center focus:outline-none p-1 md:p-2 cursor-pointer">
+          <span class="letter-glyph font-display text-5xl sm:text-7xl md:text-9xl lg:text-[11rem] font-bold tracking-tight text-neutral-900 leading-none transition-transform">M</span>
+          <div class="letter-sub w-full pt-2 md:pt-3 border-t border-neutral-300 text-[10px] sm:text-xs md:text-sm font-mono uppercase tracking-wider text-neutral-600 transition-all text-center">
+            <span class="font-semibold block text-[9px] sm:text-[10px] text-neutral-400">01</span>
+            <span data-mk="letters.M">Profiel</span>
+          </div>
+        </button>
+
+        <!-- Letter A -->
+        <button onclick="openSection('A')" id="btn-A" class="letter-col group flex flex-col items-center focus:outline-none p-1 md:p-2 cursor-pointer">
+          <span class="letter-glyph font-display text-5xl sm:text-7xl md:text-9xl lg:text-[11rem] font-bold tracking-tight text-neutral-900 leading-none transition-transform">A</span>
+          <div class="letter-sub w-full pt-2 md:pt-3 border-t border-neutral-300 text-[10px] sm:text-xs md:text-sm font-mono uppercase tracking-wider text-neutral-600 transition-all text-center">
+            <span class="font-semibold block text-[9px] sm:text-[10px] text-neutral-400">02</span>
+            <span data-mk="letters.A">Parcours</span>
+          </div>
+        </button>
+
+        <!-- Letter R -->
+        <button onclick="openSection('R')" id="btn-R" class="letter-col group flex flex-col items-center focus:outline-none p-1 md:p-2 cursor-pointer">
+          <span class="letter-glyph font-display text-5xl sm:text-7xl md:text-9xl lg:text-[11rem] font-bold tracking-tight text-neutral-900 leading-none transition-transform">R</span>
+          <div class="letter-sub w-full pt-2 md:pt-3 border-t border-neutral-300 text-[10px] sm:text-xs md:text-sm font-mono uppercase tracking-wider text-neutral-600 transition-all text-center">
+            <span class="font-semibold block text-[9px] sm:text-[10px] text-neutral-400">03</span>
+            <span data-mk="letters.R">Skills</span>
+          </div>
+        </button>
+
+        <!-- Letter K -->
+        <button onclick="openSection('K')" id="btn-K" class="letter-col group flex flex-col items-center focus:outline-none p-1 md:p-2 cursor-pointer">
+          <span class="letter-glyph font-display text-5xl sm:text-7xl md:text-9xl lg:text-[11rem] font-bold tracking-tight text-neutral-900 leading-none transition-transform">K</span>
+          <div class="letter-sub w-full pt-2 md:pt-3 border-t border-neutral-300 text-[10px] sm:text-xs md:text-sm font-mono uppercase tracking-wider text-neutral-600 transition-all text-center">
+            <span class="font-semibold block text-[9px] sm:text-[10px] text-neutral-400">04</span>
+            <span data-mk="letters.K">Passie</span>
+          </div>
+        </button>
+
+        <!-- Letter O -->
+        <button onclick="openSection('O')" id="btn-O" class="letter-col group flex flex-col items-center focus:outline-none p-1 md:p-2 cursor-pointer">
+          <span class="letter-glyph font-display text-5xl sm:text-7xl md:text-9xl lg:text-[11rem] font-bold tracking-tight text-neutral-900 leading-none transition-transform">O</span>
+          <div class="letter-sub w-full pt-2 md:pt-3 border-t border-neutral-300 text-[10px] sm:text-xs md:text-sm font-mono uppercase tracking-wider text-neutral-600 transition-all text-center">
+            <span class="font-semibold block text-[9px] sm:text-[10px] text-neutral-400">05</span>
+            <span data-mk="letters.O">Contact</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Secondary Name: CORDI (Smaller, sophisticated editorial font) -->
+      <div class="mt-6 md:mt-8 flex items-center justify-center space-x-6">
+        <span class="h-[1px] w-12 md:w-24 bg-neutral-300"></span>
+        <h1 class="font-serif italic text-2xl sm:text-3xl md:text-4xl tracking-[0.35em] text-neutral-700 uppercase font-light">
+          Cordi
+        </h1>
+        <span class="h-[1px] w-12 md:w-24 bg-neutral-300"></span>
+      </div>
+
+    </div>
+
+    <!-- Instruction Guide -->
+    <div class="mt-8 flex items-center space-x-2 text-xs font-mono text-neutral-400">
+      <i data-lucide="arrow-up" class="w-3.5 h-3.5 animate-bounce"></i>
+      <span data-mk="hero.hint">Klik op een letter van MARKO om de secties te ontdekken</span>
+    </div>
+
+  </main>
+
+
+  <!-- ================= FOOTER EDITORIAL STRIP ================= -->
+  <footer class="w-full px-6 md:px-12 py-5 border-t border-borderSubtle flex flex-col sm:flex-row items-center justify-between text-xs font-mono text-neutral-500 gap-3 no-print">
+    <div class="flex items-center space-x-4">
+      <span>© 2026 Marko Cordi</span>
+      <span>·</span>
+      <span data-mk="footer.location">Sint-Pieters-Woluwe, Brussel, België</span>
+    </div>
+    <div class="flex items-center space-x-5">
+      <a href="tel:+32479195824" class="hover:text-ink transition flex items-center">
+        <i data-lucide="phone" class="w-3.5 h-3.5 mr-1"></i> +32 479 19 58 24
+      </a>
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=1150+Woluwe-Saint-Pierre,+Bruxelles,+Belgique" target="_blank" rel="noopener" class="hover:text-ink transition flex items-center">
+        <i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1"></i> Google Maps
+      </a>
+      <a href="https://www.linkedin.com" target="_blank" rel="noopener" class="hover:text-ink transition flex items-center">
+        <i data-lucide="linkedin" class="w-3.5 h-3.5 mr-1"></i> LinkedIn
+      </a>
+    </div>
+  </footer>
+
+
+  <!-- ================= PRINT MODAL / PDF EXPORT ASSISTANT ================= -->
+  <div id="print-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-neutral-900/60 backdrop-blur-sm hidden no-print">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-neutral-200 space-y-6">
+      <div class="flex justify-between items-start">
+        <div>
+          <span class="text-xs font-mono uppercase tracking-widest text-neutral-500">Exportation Officielle</span>
+          <h3 class="text-2xl font-serif font-bold text-neutral-900">Télécharger / Imprimer en PDF (A4)</h3>
+        </div>
+        <button onclick="closePrintModal()" class="text-neutral-400 hover:text-neutral-800">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <p class="text-sm text-neutral-600 leading-relaxed">
+        Choisissez la langue du CV : le PDF A4 se télécharge directement. Le document respecte strictement les normes professionnelles belges et européennes (mise en page A4, liens cliquables actifs, typographie soignée et sans encombrement visuel).
+      </p>
+
+      <div class="grid grid-cols-3 gap-3">
+        <a href="CV_Marko_Cordi_FR.pdf" download class="p-3 border-2 border-neutral-800 rounded-xl flex flex-col items-center justify-center hover:bg-neutral-50 transition">
+          <span class="font-bold text-lg">FR</span>
+          <span class="text-[11px] text-neutral-500">Français</span>
+        </a>
+        <a href="CV_Marko_Cordi_NL.pdf" download class="p-3 border-2 border-neutral-200 hover:border-neutral-800 rounded-xl flex flex-col items-center justify-center hover:bg-neutral-50 transition">
+          <span class="font-bold text-lg">NL</span>
+          <span class="text-[11px] text-neutral-500">Nederlands</span>
+        </a>
+        <a href="CV_Marko_Cordi_EN.pdf" download class="p-3 border-2 border-neutral-200 hover:border-neutral-800 rounded-xl flex flex-col items-center justify-center hover:bg-neutral-50 transition">
+          <span class="font-bold text-lg">EN</span>
+          <span class="text-[11px] text-neutral-500">English</span>
+        </a>
+      </div>
+
+      <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg text-xs text-amber-900 flex items-start space-x-2">
+        <i data-lucide="info" class="w-4 h-4 flex-shrink-0 mt-0.5"></i>
+        <span><strong>Conseil d'impression :</strong> Dans la fenêtre d'impression, cochez « Imprimer les arrière-plans » et choisissez la destination « Enregistrer au format PDF ».</span>
+      </div>
+
+      <div class="flex justify-end space-x-3 pt-2">
+        <button onclick="closePrintModal()" class="px-4 py-2 text-sm text-neutral-600 hover:text-neutral-900">Annuler</button>
+        <button onclick="triggerDirectPrint()" class="px-5 py-2 text-sm font-semibold bg-ink text-white rounded-lg hover:bg-neutral-800 transition flex items-center">
+          <i data-lucide="printer" class="w-4 h-4 mr-2"></i> Lancer l'impression PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= PRINT-ONLY REFINED CLASSIC A4 CV TEMPLATE ================= -->
+  <div id="print-cv-container" class="print-only font-sans p-2">
+    <header class="border-b-2 border-neutral-900 pb-4 mb-5 flex justify-between items-start">
+      <div>
+        <h1 class="text-3xl font-serif font-bold tracking-tight text-neutral-900 uppercase">Marko Cordi</h1>
+        <p id="print-role" class="text-sm font-mono font-semibold tracking-wide text-neutral-700 mt-1">Étudiant en Automatisation · EPHEC · Bruxelles</p>
+        <p id="print-pitch" class="text-xs text-neutral-600 mt-2 max-w-xl leading-relaxed">
+          Curieux, autonome et polyvalent : à l’aise sur une platine d’essai (circuits, logique numérique, radio-amateurisme ON3) comme derrière un écran (Python, web interactif, simulations). Je relie la théorie scientifique à des réalisations concrètes.
+        </p>
+      </div>
+      <div class="text-right text-xs space-y-1 font-mono text-neutral-700">
+        <p><strong>1150 Bruxelles (Woluwe-Saint-Pierre)</strong></p>
+        <p><a href="tel:+32479195824">+32 479 19 58 24</a></p>
+        <p><a href="mailto:contact@marko.cordi.eu">contact@marko.cordi.eu</a></p>
+      </div>
+    </header>
+
+    <div class="grid grid-cols-3 gap-6">
+      <div class="col-span-1 space-y-5 border-r border-neutral-200 pr-4">
+        <div>
+          <h4 id="print-h-skills" class="text-xs font-mono uppercase tracking-widest font-bold border-b border-neutral-800 pb-1 mb-2">Compétences clés</h4>
+          <ul class="text-[9.5pt] space-y-1 text-neutral-800 list-disc list-inside">
+            <li>Platine d’essai &amp; câblage de circuits</li>
+            <li>Électricité générale &amp; circuits RC</li>
+            <li>Logique numérique (Boole, Karnaugh)</li>
+            <li>Radio-amateurisme (ON3)</li>
+            <li>Python, HTML5 / CSS3, JavaScript</li>
+            <li>Excel, GeoGebra</li>
+          </ul>
+        </div>
+        <div>
+          <h4 id="print-h-langs" class="text-xs font-mono uppercase tracking-widest font-bold border-b border-neutral-800 pb-1 mb-2">Langues</h4>
+          <ul class="text-[9.5pt] space-y-1 text-neutral-800">
+            <li><strong>Français, Slovaque :</strong> langues maternelles</li>
+            <li><strong>Anglais :</strong> C2</li>
+            <li><strong>Italien :</strong> B2</li>
+            <li><strong>Latin :</strong> notions scolaires</li>
+          </ul>
+        </div>
+        <div>
+          <h4 id="print-h-soft" class="text-xs font-mono uppercase tracking-widest font-bold border-b border-neutral-800 pb-1 mb-2">Certification</h4>
+          <ul class="text-[9.5pt] space-y-1 text-neutral-800">
+            <li><strong>Opérateur radio ON3</strong> — IBPT, août 2022</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-span-2 space-y-5">
+        <div>
+          <h4 id="print-h-exp" class="text-xs font-mono uppercase tracking-widest font-bold border-b border-neutral-800 pb-1 mb-2">Expériences de terrain</h4>
+          <div class="mb-3">
+            <div class="text-xs font-bold text-neutral-900">Animateur / encadrant de stages sportifs — Action Sport ASBL</div>
+            <p class="text-[9pt] text-neutral-700 leading-snug mt-0.5">Encadrement de groupes d’enfants et de jeunes : animation de séances sportives et de grands jeux, pédagogie adaptée à l’âge, respect des règles de sécurité, travail d’équipe avec les co-animateurs.</p>
+          </div>
+          <div class="mb-3">
+            <div class="text-xs font-bold text-neutral-900">Stages d’observation WEX — École Européenne de Bruxelles III</div>
+            <p class="text-[9pt] text-neutral-700 leading-snug mt-0.5">IBPT (1 semaine) · AfricaMuseum, Tervuren (2 semaines) · MSF, pôle Télécoms. Découverte d’équipes techniques, de la régulation des télécoms et des radiocommunications d’urgence.</p>
+          </div>
+        </div>
+        <div>
+          <h4 id="print-h-edu" class="text-xs font-mono uppercase tracking-widest font-bold border-b border-neutral-800 pb-1 mb-2">Formation</h4>
+          <div class="mb-2">
+            <div class="text-xs font-bold text-neutral-900">EPHEC — Automatisation (1ʳᵉ année, en cours)</div>
+            <p class="text-[8.5pt] text-neutral-500 font-mono">Bruxelles, Belgique</p>
+          </div>
+          <div class="mb-2">
+            <div class="text-xs font-bold text-neutral-900">ECAM — Ingénieur industriel (1ʳᵉ année)</div>
+            <p class="text-[8.5pt] text-neutral-500 font-mono">Bruxelles, Belgique</p>
+          </div>
+          <div>
+            <div class="text-xs font-bold text-neutral-900">Baccalauréat Européen — École Européenne de Bruxelles III</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MODULES JAVASCRIPT ================= -->
+  <!-- 1. Données multilingues (FR, NL, EN) -->
+  <script src="js/data/data-fr.js"></script>
+  <script src="js/data/data-nl.js"></script>
+  <script src="js/data/data-en.js"></script>
+
+  <!-- 2. Logique métier & i18n / impression -->
+  <script src="js/app.js"></script>
+
+  <!-- 3. Moteur ASCII, Whiteboard infini & Boucle temps réel -->
+  <script src="js/ascii-core.js"></script>
+  <script src="js/whiteboard.js"></script>
+  <script src="js/ascii-background.js"></script>
+  <script src="js/ascii-live.js"></script>
+
+  <!-- 4. Cartes iframe zoomables multilingues : M (Profil), A (Parcours), R (Skills), K (Passion), O (Contact) -->
+  <script>
+  (function () {
+    const MAX_W = 1280, MIN_ZOOM = 0.65, MAX_ZOOM = 3.2;
+    const FULL_H = 'calc(100vh - 175px)', SMALL_H = '580px';
+    const PAGES = {
+      M: {
+        src: { fr: '01_Profil_M_FR.html', en: '01_Profil_M_EN.html', nl: '01_Profil_M_NL.html' },
+        label: { fr: '[01] PROFIL · PORTRAIT ASCII & FICHE', en: '[01] PROFILE · ASCII PORTRAIT & CARD', nl: '[01] PROFIEL · ASCII-PORTRET & FICHE' },
+        title: 'Profil — Marko Cordi', bg: '#000', dark: true, native: false
+      },
+      A: {
+        src: { fr: '02_Parcours_A_FR.html', en: '02_Parcours_A_EN.html', nl: '02_Parcours_A_NL.html' },
+        label: { fr: '[02] PARCOURS · EXPÉRIENCES DE TERRAIN', en: '[02] TRACK RECORD · FIELD EXPERIENCE', nl: '[02] PARCOURS · PRAKTIJKERVARING' },
+        title: 'Parcours — Marko Cordi', bg: '#07213f', dark: true, native: true
+      },
+      R: {
+        src: { fr: '03_Skills_R_FR.html', en: '03_Skills_R_EN.html', nl: '03_Skills_R_NL.html' },
+        label: { fr: '[03] SKILLS · COMPÉTENCES & RÉALISATIONS', en: '[03] SKILLS · COMPETENCES & PROJECTS', nl: '[03] SKILLS · VAARDIGHEDEN & REALISATIES' },
+        title: 'Skills — Marko Cordi', bg: '#000', dark: true, native: false
+      },
+      K: {
+        src: { fr: '04_Passion_K_FR.html', en: '04_Passion_K_EN.html', nl: '04_Passion_K_NL.html' },
+        label: { fr: '[04] PASSION · PROJETS & INTÉRÊTS', en: '[04] PASSION · PROJECTS & INTERESTS', nl: '[04] PASSIE · PROJECTEN & INTERESSES' },
+        title: 'Passion — Marko Cordi', bg: '#000', dark: true, native: true
+      },
+      O: {
+        src: { fr: '05_Contact_O_FR.html', en: '05_Contact_O_EN.html', nl: '05_Contact_O_NL.html' },
+        label: { fr: '[05] CONTACT · ACTIONS DIRECTES', en: '[05] CONTACT · DIRECT ACTIONS', nl: '[05] CONTACT · DIRECTE ACTIES' },
+        title: 'Contact — Marko Cordi', bg: '#fff', dark: false, native: true
+      }
+    };
+    const UI_TXT = {
+      fr: { home: 'Accueil', prevTitle: 'Section précédente', nextTitle: 'Section suivante', outTitle: 'Zoom arrière', resetTitle: 'Réinitialiser (100%)', inTitle: 'Zoom avant', fit: 'Ajuster', reduce: 'Réduire', expand: 'Agrandir', full: 'Plein écran', hintNative: 'Molette : faire défiler · Ctrl + molette ou +/− : zoom', hintZoom: 'Molette / Pinch pour zoomer · Glisser quand zoomé' },
+      en: { home: 'Home', prevTitle: 'Previous section', nextTitle: 'Next section', outTitle: 'Zoom out', resetTitle: 'Reset (100%)', inTitle: 'Zoom in', fit: 'Fit', reduce: 'Reduce', expand: 'Expand', full: 'Fullscreen', hintNative: 'Wheel: scroll · Ctrl + wheel or +/−: zoom', hintZoom: 'Wheel / Pinch to zoom · Drag when zoomed' },
+      nl: { home: 'Start', prevTitle: 'Vorige sectie', nextTitle: 'Volgende sectie', outTitle: 'Uitzoomen', resetTitle: 'Herstellen (100%)', inTitle: 'Inzoomen', fit: 'Aanpassen', reduce: 'Verkleinen', expand: 'Vergroten', full: 'Volledig scherm', hintNative: 'Muiswiel: scrollen · Ctrl + wiel of +/−: zoomen', hintZoom: 'Muiswiel / Pinch om te zoomen · Slepen indien ingezoomd' }
+    };
+    const ORDER = ['M', 'A', 'R', 'K', 'O'];
+    const states = {};
+    window.__mkLang = document.documentElement.lang || 'fr';
+
+    function mount(letter, container, cfg, onToggleExpand, card) {
+      if (states[letter]) states[letter].destroy();
+      const L = UI_TXT[window.__mkLang] ? window.__mkLang : 'fr';
+      const ui = UI_TXT[L];
+      let relZoom = 1, baseScale = 1, panX = 0, panY = 0, expanded = true, W0 = MAX_W, H0 = 760, loaded = false;
+
+      container.innerHTML = `
+        <div class="wb-card-m-iframe-wrap" style="height:${FULL_H};">
+          <div class="wb-m-toolbar">
+            <span class="wb-m-lbl text-neutral-400 truncate">${cfg.label[L]}</span>
+            <div class="wb-m-controls">
+              <span class="wb-m-nav"><button type="button" class="wb-m-btn" data-act="home">${ui.home}</button><button type="button" class="wb-m-btn" data-act="prev" title="${ui.prevTitle}">←</button><button type="button" class="wb-m-btn" data-act="next" title="${ui.nextTitle}">→</button></span>
+              <button type="button" class="wb-m-btn" data-act="out" title="${ui.outTitle}">−</button>
+              <span class="wb-m-readout" data-act="reset" title="${ui.resetTitle}">100%</span>
+              <button type="button" class="wb-m-btn" data-act="in" title="${ui.inTitle}">+</button>
+              <button type="button" class="wb-m-btn" data-act="reset" title="${ui.fit}">${ui.fit}</button>
+              <button type="button" class="wb-m-btn" data-act="expand">${ui.reduce}</button>
+              <button type="button" class="wb-m-btn" data-act="full" title="${ui.full}">${ui.full}</button>
+            </div>
+          </div>
+          <div class="wb-m-viewport">
+            <div class="wb-m-scaler"><iframe title="${cfg.title}" allow="fullscreen" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+            <div class="wb-m-shield"></div>
+            <div class="wb-m-hint">${cfg.native ? ui.hintNative : ui.hintZoom}</div>
+          </div>
+        </div>`;
+
+      const wrap = container.querySelector('.wb-card-m-iframe-wrap'), vp = container.querySelector('.wb-m-viewport'),
+            scaler = container.querySelector('.wb-m-scaler'), frame = scaler.querySelector('iframe'),
+            shield = container.querySelector('.wb-m-shield'), readout = container.querySelector('.wb-m-readout'),
+            lblEl = container.querySelector('.wb-m-lbl'),
+            hint = container.querySelector('.wb-m-hint'), $ = a => container.querySelector('[data-act="' + a + '"]');
+
+      const load = () => {
+        loaded = true;
+        const curL = UI_TXT[window.__mkLang] ? window.__mkLang : 'fr';
+        const targetSrc = cfg.src[curL];
+        if (frame.getAttribute('src') !== targetSrc) frame.setAttribute('src', targetSrc);
+      };
+      let io = null;
+      if ('IntersectionObserver' in window) { io = new IntersectionObserver(es => { if (es.some(x => x.isIntersecting)) { load(); io.disconnect(); } }, { rootMargin: '200px' }); io.observe(wrap); }
+      else load();
+      setTimeout(() => hint.classList.add('gone'), 6000);
+
+      function clampPan(vpW, vpH, scale) {
+        const cW = W0 * scale, cH = H0 * scale;
+        panX = cW <= vpW ? (vpW - cW) / 2 : Math.min(0, Math.max(vpW - cW, panX));
+        panY = cH <= vpH ? (vpH - cH) / 2 : Math.min(0, Math.max(vpH - cH, panY));
+      }
+      function update(fx, fy, prevZoom) {
+        const vpW = vp.clientWidth || 720, vpH = vp.clientHeight || 480;
+        W0 = Math.min(MAX_W, Math.max(360, vpW));
+        baseScale = vpW / W0;
+        H0 = Math.round(vpH / baseScale);
+        scaler.style.width = frame.style.width = W0 + 'px';
+        scaler.style.height = frame.style.height = H0 + 'px';
+        const oldScale = baseScale * (prevZoom || relZoom), newScale = baseScale * relZoom;
+        if (typeof fx === 'number' && typeof fy === 'number' && oldScale > 0) {
+          const sx = (fx - panX) / oldScale, sy = (fy - panY) / oldScale;
+          panX = fx - sx * newScale; panY = fy - sy * newScale;
+        }
+        clampPan(vpW, vpH, newScale);
+        scaler.style.transform = `translate3d(${panX.toFixed(1)}px, ${panY.toFixed(1)}px, 0) scale(${newScale.toFixed(4)})`;
+        readout.textContent = Math.round(relZoom * 100) + '%';
+        vp.classList.toggle('is-zoomed', relZoom > 1.02);
+      }
+      function setZoom(next, fx, fy) { const prev = relZoom; relZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, next)); update(fx, fy, prev); }
+      const reset = () => { relZoom = 1; panX = 0; panY = 0; update(); };
+      const mid = () => [vp.clientWidth / 2, vp.clientHeight / 2];
+
+      $('out').addEventListener('click', e => { e.stopPropagation(); setZoom(relZoom - 0.25, ...mid()); });
+      $('in').addEventListener('click', e => { e.stopPropagation(); setZoom(relZoom + 0.25, ...mid()); });
+      container.querySelectorAll('[data-act="reset"]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); reset(); }));
+      $('expand').addEventListener('click', e => {
+        e.stopPropagation(); expanded = !expanded;
+        const curUi = UI_TXT[window.__mkLang] || UI_TXT.fr;
+        e.currentTarget.textContent = expanded ? curUi.reduce : curUi.expand;
+        onToggleExpand(expanded, wrap); setTimeout(() => update(), 60);
+      });
+      const chrome = re => [...card.querySelectorAll(':scope > :not(.wb-body) button, :scope > :not(.wb-body) a')].find(b => re.test(b.textContent));
+      const near = k => { const i = ORDER.indexOf(letter); return ORDER[(i + k + ORDER.length) % ORDER.length]; };
+      [['home', /accueil|home|start|thuis/i, null], ['prev', /préc|prev|vorig/i, -1], ['next', /suiv|next|volgend/i, 1]].forEach(([a, re, k]) =>
+        $(a).addEventListener('click', e => { e.stopPropagation(); const b = chrome(re); if (b) b.click(); else if (k && typeof openSection === 'function') openSection(near(k)); }));
+      $('full').addEventListener('click', e => { e.stopPropagation(); (wrap.requestFullscreen || wrap.webkitRequestFullscreen || (() => {})).call(wrap); });
+
+      vp.addEventListener('wheel', e => {
+        if (cfg.native && !e.ctrlKey) return;
+        e.preventDefault(); e.stopPropagation();
+        const r = vp.getBoundingClientRect();
+        setZoom(relZoom * (e.deltaY < 0 ? 1.14 : 1 / 1.14), e.clientX - r.left, e.clientY - r.top);
+      }, { passive: false });
+
+      let dragging = false, sx = 0, sy = 0, spx = 0, spy = 0;
+      shield.addEventListener('pointerdown', e => { e.stopPropagation(); dragging = true; sx = e.clientX; sy = e.clientY; spx = panX; spy = panY; vp.classList.add('is-dragging'); shield.setPointerCapture(e.pointerId); });
+      shield.addEventListener('pointermove', e => { if (!dragging) return; e.stopPropagation(); panX = spx + (e.clientX - sx); panY = spy + (e.clientY - sy); update(); });
+      const stopDrag = e => { if (!dragging) return; e.stopPropagation(); dragging = false; vp.classList.remove('is-dragging'); try { shield.releasePointerCapture(e.pointerId); } catch (_) {} };
+      shield.addEventListener('pointerup', stopDrag); shield.addEventListener('pointercancel', stopDrag);
+
+      let pDist = 0, pZoom = 1;
+      const dist = t => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+      vp.addEventListener('touchstart', e => { if (e.touches.length === 2) { e.stopPropagation(); pDist = dist(e.touches); pZoom = relZoom; } }, { passive: true });
+      vp.addEventListener('touchmove', e => {
+        if (e.touches.length === 2 && pDist > 0) {
+          e.preventDefault(); e.stopPropagation();
+          const r = vp.getBoundingClientRect();
+          setZoom(pZoom * (dist(e.touches) / pDist), (e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left, (e.touches[0].clientY + e.touches[1].clientY) / 2 - r.top);
+        }
+      }, { passive: false });
+
+      const ro = new ResizeObserver(() => update()); ro.observe(vp);
+      requestAnimationFrame(() => update());
+
+      states[letter] = {
+        win: () => frame.contentWindow,
+        setLang(lang) {
+          const curUi = UI_TXT[lang] || UI_TXT.fr;
+          lblEl.textContent = cfg.label[lang] || cfg.label.fr;
+          $('home').textContent = curUi.home;
+          $('fit') && ($('fit').textContent = curUi.fit);
+          container.querySelectorAll('[data-act="reset"]').forEach(b => { if (!b.classList.contains('wb-m-readout')) b.textContent = curUi.fit; });
+          $('expand').textContent = expanded ? curUi.reduce : curUi.expand;
+          $('full').textContent = curUi.full;
+          hint.textContent = cfg.native ? curUi.hintNative : curUi.hintZoom;
+          if (loaded) {
+            const targetSrc = cfg.src[lang] || cfg.src.fr;
+            if (frame.getAttribute('src') !== targetSrc) frame.setAttribute('src', targetSrc);
+          }
+        },
+        onIframeWheel(d) {
+          const s = baseScale * relZoom;
+          setZoom(relZoom * (d.deltaY < 0 ? 1.14 : 1 / 1.14), panX + d.clientX * s, panY + d.clientY * s);
+        },
+        destroy() { ro.disconnect(); if (io) io.disconnect(); }
+      };
+    }
+
+    function relayout() { if (typeof layout === 'function') { layout(); if (typeof go === 'function') go(cur, true); } }
+
+    function inject(letter) {
+      const card = document.getElementById('panel-' + letter), cfg = PAGES[letter];
+      if (!card || !cfg || card.querySelector('.wb-card-m-iframe-wrap')) return;
+      const body = card.querySelector('.wb-body');
+      if (!body) return;
+      card.classList.add('wb-card-m-wide', 'wb-card-full', 'wb-card-camo');
+      card.dataset.camo = cfg.dark ? 'dark' : 'light';
+      card.style.setProperty('--camo', cfg.bg);
+      mount(letter, body, cfg, (expanded, wrap) => {
+        wrap.style.height = expanded ? FULL_H : SMALL_H;
+        card.classList.toggle('wb-card-full', expanded);
+        relayout();
+      }, card);
+      relayout();
+    }
+    const injectAll = () => Object.keys(PAGES).forEach(inject);
+
+    window.__switchIframeLang = function (lang) {
+      window.__mkLang = UI_TXT[lang] ? lang : 'fr';
+      for (const L in states) states[L].setLang(window.__mkLang);
+    };
+
+    window.addEventListener('message', e => {
+      const d = e.data;
+      if (!d || !d.type) return;
+      for (const L in states) {
+        if (e.source !== states[L].win()) continue;
+        if (d.type === 'profil-iframe-wheel') states[L].onIframeWheel(d);
+        else if (d.type === 'portfolio-nav' && typeof openSection === 'function' && (d.action === 'prev' || d.action === 'next')) {
+          const i = ORDER.indexOf(L), n = ORDER[(i + (d.action === 'next' ? 1 : -1) + ORDER.length) % ORDER.length];
+          openSection(n);
+        }
+      }
+    });
+
+    let pending = false;
+    new MutationObserver(() => {
+      if (pending) return; pending = true;
+      requestAnimationFrame(() => { pending = false; injectAll(); });
+    }).observe(document.body, { childList: true, subtree: true });
+    window.addEventListener('DOMContentLoaded', () => { setTimeout(injectAll, 100); setTimeout(injectAll, 500); });
+  })();
+  </script>
+
+  <!-- Textes FR / NL / EN : invitation + noms sous les lettres + pied de page -->
+  <script>
+  (function () {
+    const T = {
+      fr: { 'hero.cta': 'Appuyez sur une lettre pour entrer dans une section', 'hero.hint': 'Cliquez sur une lettre de MARKO pour explorer les sections',
+            'letters.M': 'Profil', 'letters.A': 'Parcours', 'letters.R': 'Skills', 'letters.K': 'Passion', 'letters.O': 'Contact',
+            'footer.location': 'Woluwe-Saint-Pierre, Bruxelles, Belgique' },
+      nl: { 'hero.cta': 'Druk op een letter om een sectie te openen', 'hero.hint': 'Klik op een letter van MARKO om de secties te ontdekken',
+            'letters.M': 'Profiel', 'letters.A': 'Parcours', 'letters.R': 'Skills', 'letters.K': 'Passie', 'letters.O': 'Contact',
+            'footer.location': 'Sint-Pieters-Woluwe, Brussel, België' },
+      en: { 'hero.cta': 'Tap a letter to open a section', 'hero.hint': 'Click a letter of MARKO to explore the sections',
+            'letters.M': 'Profile', 'letters.A': 'Track Record', 'letters.R': 'Skills', 'letters.K': 'Passion', 'letters.O': 'Contact',
+            'footer.location': 'Woluwe-Saint-Pierre, Brussels, Belgium' }
+    };
+    function current() {
+      for (const l of ['fr', 'nl', 'en']) { const b = document.getElementById('lang-' + l); if (b && /bg-ink/.test(b.className)) return l; }
+      const h = (document.documentElement.lang || 'fr').slice(0, 2); return T[h] ? h : 'fr';
+    }
+    function apply(l) {
+      l = T[l] ? l : 'fr';
+      document.documentElement.lang = l;
+      document.querySelectorAll('[data-mk]').forEach(el => { const v = T[l][el.getAttribute('data-mk')]; if (v) el.textContent = v; });
+      document.querySelectorAll('.mk-l').forEach(el => el.classList.toggle('on', el.dataset.l === l));
+      if (typeof window.__switchIframeLang === 'function') window.__switchIframeLang(l);
+    }
+    ['fr', 'nl', 'en'].forEach(l => { const b = document.getElementById('lang-' + l); if (b) b.addEventListener('click', () => { apply(l); setTimeout(() => apply(l), 60); }); });
+    if (typeof window.setLanguage === 'function') { const o = window.setLanguage; window.setLanguage = function (l) { const r = o.apply(this, arguments); apply(l); return r; }; }
+    const init = () => { apply(current()); setTimeout(() => apply(current()), 300); };
+    if (document.readyState === 'complete') init(); else addEventListener('load', init);
+    apply(current());
+  })();
+  </script>
+</body>
+</html>
