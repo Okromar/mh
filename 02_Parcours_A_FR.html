@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>02 — PARCOURS (Lettre A) · Marko Cordi · Expériences de terrain</title>
+<style>
+:root{color-scheme:light;--ink:#14161a;--mute:#5d6673;--line:#c4cad3;--bar:#eef0f4;--acc:#0b5fb0;--dim:#b3261e;--org:#ff6a1a;
+--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--serif:"Iowan Old Style","Palatino Linotype",Georgia,serif;--mono:ui-monospace,Menlo,Consolas,monospace;
+--top:env(safe-area-inset-top,0px);--bot:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html,body{height:auto;margin:0;background:#fff;color:var(--ink);font:13px/1.45 var(--sans);overflow:visible}
+#scroll{height:640vh}
+#app{position:fixed;inset:0;height:auto;padding:0;display:block;background:#fff}
+#rib{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:6px 10px;padding-top:calc(6px + var(--top));background:var(--bar);border-bottom:1px solid var(--line);position:absolute;top:0;left:0;right:0;z-index:20}
+.file{font-weight:700;margin-right:4px;letter-spacing:.02em}
+button{font:inherit;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
+button:hover{background:#e3ecf7}
+button[aria-pressed=true],button.primary{background:var(--acc);color:#fff;border-color:var(--acc)}
+button.primary:hover{background:#094d8f}
+button:disabled{opacity:.45;cursor:default}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+#vp{position:absolute;inset:0;border:0;background:#fff}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair;outline:none}
+#gl:focus-visible{box-shadow:inset 0 0 0 2px var(--acc)}
+#frame{position:absolute;inset:0;border:var(--pad,26px) solid #07213f;pointer-events:none;box-shadow:none}
+#sheetline{position:absolute;inset:calc(var(--pad,26px) + 12px);border:2px solid rgba(220,240,255,.9);opacity:var(--sh,1);pointer-events:none;
+ background:linear-gradient(rgba(200,230,255,.07) 1px,transparent 1px) 0 0/20px 20px,linear-gradient(90deg,rgba(200,230,255,.07) 1px,transparent 1px) 0 0/20px 20px,linear-gradient(rgba(200,230,255,.1) 1px,transparent 1px) 0 0/100px 100px,linear-gradient(90deg,rgba(200,230,255,.1) 1px,transparent 1px) 0 0/100px 100px}
+.zs{position:absolute;display:flex;justify-content:space-around;font:10px var(--mono);color:#8fbfe8}
+.zs.t,.zs.b{left:0;right:0}.zs.t{top:3px}.zs.b{bottom:3px}.zs.l,.zs.r{top:0;bottom:0;flex-direction:column}.zs.l{left:5px}.zs.r{right:5px}
+.vf{position:absolute;border:1px solid rgba(200,230,255,.5);pointer-events:none;background:repeating-linear-gradient(90deg,rgba(150,210,255,.45) 0 14px,transparent 14px 18px,rgba(150,210,255,.45) 18px 20px,transparent 20px 24px) center/100% 1px no-repeat,repeating-linear-gradient(0deg,rgba(150,210,255,.45) 0 14px,transparent 14px 18px,rgba(150,210,255,.45) 18px 20px,transparent 20px 24px) center/1px 100% no-repeat}
+.vf b{position:absolute;left:8px;top:5px;font:600 10px var(--mono);letter-spacing:.1em;color:#bfe3ff}
+#vlabel{position:absolute;top:auto;bottom:calc(var(--pad,26px) + 22px);left:calc(var(--pad,26px) + 24px);color:var(--fg,#cfe6ff);font:600 11px var(--sans);letter-spacing:.04em;text-transform:uppercase;pointer-events:none}
+body.hud #vlabel{top:50px;bottom:auto}
+#cubeWrap{position:absolute;top:44px;right:14px;width:96px;height:112px;perspective:360px}
+#cube{position:absolute;left:23px;top:23px;width:50px;height:50px;transform-style:preserve-3d}
+#cube div{position:absolute;inset:0;display:grid;place-items:center;background:rgba(255,255,255,.93);border:1px solid #7f8896;font:600 8.5px var(--sans);cursor:pointer}
+#cube div:hover{background:#cfe3f8}
+.fF{transform:translateZ(25px)}.fB{transform:rotateY(180deg) translateZ(25px)}.fR{transform:rotateY(90deg) translateZ(25px)}
+.fL{transform:rotateY(-90deg) translateZ(25px)}.fT{transform:rotateX(90deg) translateZ(25px)}.fD{transform:rotateX(-90deg) translateZ(25px)}
+#home{position:absolute;left:34px;top:92px;padding:0 8px;line-height:18px}
+#ucs{position:absolute;left:10px;bottom:calc(150px + var(--bot));width:90px;height:80px;pointer-events:none;overflow:visible}
+#ucs text{font:600 11px var(--sans)}
+#dims{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.dim{position:absolute;left:0;top:0;padding:0 3px;background:var(--bgc,#0d3f78);color:#9fd8ff;font:600 12px var(--sans)}
+#tb{position:absolute;right:calc(var(--pad,26px) + 14px);bottom:calc(var(--pad,26px) + 14px);border-collapse:collapse;background:rgba(7,33,63,.42);color:#d8ecff;opacity:var(--sh,1);font:11px var(--mono);pointer-events:none}
+#tb td{border:1.5px solid rgba(220,240,255,.85);padding:2px 8px}#tb td:first-child{color:#8fbfe8}
+#cmd{height:92px;display:flex;flex-direction:column;background:rgba(250,251,252,.94);position:absolute;left:0;right:0;bottom:calc(36px + var(--bot));z-index:15}
+#log{flex:1;overflow:auto;padding:4px 10px;color:var(--mute)}#log .ok{color:var(--ink)}
+#cmd label{display:flex;align-items:center;gap:8px;padding:4px 10px;border-top:1px solid var(--line)}
+#cin{flex:1;border:0;background:none;font:inherit;color:var(--ink);padding:3px 0}
+#status{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;padding:4px 10px calc(4px + var(--bot));background:var(--bar);position:absolute;left:0;right:0;bottom:0;z-index:15}
+#coords{flex:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+#rib,#cmd,#status,#ucs,#cubeWrap,#home{opacity:var(--hud,0);pointer-events:none}
+body.hud #rib,body.hud #cmd,body.hud #status,body.hud #cubeWrap,body.hud #home{pointer-events:auto}
+
+/* Hero blueprint */
+#hero{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%) scale(calc(1 + (1 - var(--hero,1))*.06));width:min(700px,88vw);padding:26px 30px;text-align:center;background:rgba(8,36,74,.93);border:1.5px solid rgba(220,240,255,.9);box-shadow:0 0 0 6px rgba(8,36,74,.45),0 18px 44px rgba(0,0,0,.35);color:#e8f4ff;opacity:var(--hero,1);pointer-events:auto;z-index:12}
+#hero.off{pointer-events:none}
+#hero small{display:block;font:600 11px var(--mono);letter-spacing:.18em;color:#8fbfe8}
+#hero h1{margin:10px 0 8px;font:700 clamp(24px,4.5vw,44px)/1.06 var(--sans);letter-spacing:.05em}
+#hero .sub{margin:0 0 12px;color:#fff;font:600 14px/1.4 var(--sans);letter-spacing:.02em}
+#hero p{margin:0 auto 16px;max-width:580px;color:#bcd9f2;font:14px/1.55 var(--sans)}#hero p b{color:#fff}
+.hero-links{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:8px}
+.hero-links a,.hero-links button{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:4px;font:600 11.5px var(--mono);text-decoration:none;letter-spacing:.04em;border:1px solid rgba(190,226,255,.65);background:rgba(16,66,125,.65);color:#e8f4ff;cursor:pointer}
+.hero-links a:hover,.hero-links button:hover{background:#ff6a1a;border-color:#ff6a1a;color:#fff}
+.hero-links button.cta{background:#ff6a1a;border-color:#ff6a1a;color:#fff}
+.hero-links button.cta:hover{background:#e5580c}
+
+@keyframes bob{50%{transform:translateY(7px)}}
+#hint{position:absolute;left:0;right:0;bottom:calc(var(--pad,26px) + 26px);text-align:center;color:#fff;font:600 13px var(--sans);letter-spacing:.06em;text-transform:uppercase;opacity:var(--hint,1);pointer-events:none;animation:bob 1.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){#hint{animation:none}*{transition:none!important}}
+
+/* Rail de navigation */
+#rail{position:absolute;right:6px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:12px;align-items:flex-end;z-index:18}
+#rail button{display:flex;align-items:center;gap:8px;background:none;border:0;padding:2px;color:var(--fg,#cfe6ff);font:600 10px var(--mono);letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+#rail button:hover{background:none}#rail button i{width:9px;height:9px;border:1.5px solid currentColor;border-radius:50%;display:block}
+#rail button.on i{background:currentColor}#rail button span{opacity:0;transition:opacity .2s}#rail button.on span,#rail:hover button span{opacity:1}
+#pct{font:600 10px var(--mono);color:var(--fg,#cfe6ff)}
+
+/* Nomenclature et repères */
+#bom{position:absolute;border:1.5px solid rgba(220,240,255,.85);color:#d8ecff;font:10px/1.5 var(--mono);padding:6px 8px;pointer-events:none;overflow:hidden;background:rgba(7,33,63,.42)}
+#bom h4{margin:0 0 4px;font:700 10px var(--mono);letter-spacing:.14em;color:#fff;border-bottom:1px solid rgba(220,240,255,.6);padding-bottom:3px}
+#bom div{display:flex;gap:8px}#bom b{width:14px;color:#fff}#bom em{margin-left:auto;font-style:normal;color:#8fbfe8}
+.bal circle.c{fill:var(--bgc,#0d3f78);stroke:#fff;stroke-width:1.3}.bal text{fill:#fff;font:700 10px var(--mono);text-anchor:middle}.bal line{stroke:#bfe3ff;stroke-width:1}.bal circle.p{fill:#bfe3ff}
+
+/* Bouton flottant permanent vers le dossier complet */
+#fab{position:absolute;top:calc(var(--pad,26px) + 16px);left:50%;transform:translateX(-50%);z-index:19;display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:6px;border:1.5px solid rgba(200,230,255,.85);background:rgba(7,33,63,.9);color:#fff;font:600 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;box-shadow:0 6px 18px rgba(0,0,0,.25);white-space:nowrap}
+#fab:hover{background:#ff6a1a;border-color:#ff6a1a}
+#fab .dot{width:8px;height:8px;border-radius:50%;background:#ff6a1a;display:inline-block}
+#fab:hover .dot{background:#fff}
+body.hud #fab{opacity:0;pointer-events:none}
+
+/* Cartes narratives synchronisées au scroll */
+.scard{position:absolute;left:clamp(14px,3vw,36px);top:50%;width:min(460px,calc(100vw - 56px));max-height:76vh;overflow-y:auto;padding:20px 22px;background:rgba(8,31,61,.92);color:#e9f3ff;border:1.5px solid rgba(190,226,255,.8);border-left:4px solid #ff6a1a;box-shadow:0 16px 40px rgba(4,16,34,.42);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;transform:translateY(-44%);pointer-events:none;transition:opacity .25s ease,transform .25s ease;z-index:14}
+.scard.on{pointer-events:auto}
+.scard .kicker{display:flex;align-items:center;justify-content:space-between;gap:8px;font:600 10.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#8fd0ff;margin-bottom:6px}
+.scard h2{margin:0 0 8px;font:700 20px/1.2 var(--sans);color:#fff}
+.scard .lead{margin:0 0 14px;font:13.5px/1.55 var(--sans);color:#d0e4f7}
+.scard .lead a{color:#9fd8ff;font-weight:600;text-underline-offset:3px}
+.scard .lead a:hover{color:#ff8a47}
+.exp-list{display:flex;flex-direction:column;gap:10px}
+.exp-item{padding:11px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(190,226,255,.28);border-radius:6px}
+.exp-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px;margin-bottom:5px}
+.exp-head strong{font:700 13.5px var(--sans);color:#fff}
+.badge{display:inline-block;padding:2px 7px;border-radius:99px;font:600 10px var(--mono);letter-spacing:.04em;background:rgba(255,106,26,.22);color:#ffb385;border:1px solid rgba(255,106,26,.55)}
+.exp-item p{margin:0 0 8px;font:12.5px/1.5 var(--sans);color:#cce0f5}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.tags span{font:600 10px var(--mono);padding:2px 6px;border-radius:4px;background:rgba(159,216,255,.12);color:#bfe3ff;border:1px solid rgba(159,216,255,.28)}
+.exp-acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.ext-link{display:inline-flex;align-items:center;gap:4px;padding:4px 9px;border-radius:4px;font:600 11px var(--mono);color:#fff;background:rgba(11,95,176,.7);border:1px solid rgba(159,216,255,.5);text-decoration:none}
+.ext-link:hover{background:#ff6a1a;border-color:#ff6a1a}
+.proj-btn{padding:4px 9px;border-radius:4px;font:600 11px var(--mono);color:#d8ecff;background:transparent;border:1px solid rgba(190,226,255,.45)}
+.proj-btn:hover{background:rgba(255,255,255,.14);color:#fff}
+
+/* Panneau latéral complet : Dossier 02 — PARCOURS (Lettre A) */
+#drawerBack{position:fixed;inset:0;background:rgba(6,20,40,.42);opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:29}
+#drawerBack.open{opacity:1;pointer-events:auto}
+#drawer{position:fixed;top:0;left:0;bottom:0;width:min(500px,94vw);background:#091e38;color:#e8f3ff;border-right:2px solid rgba(190,226,255,.4);box-shadow:12px 0 36px rgba(0,0,0,.4);transform:translateX(-104%);transition:transform .28s cubic-bezier(.22,1,.36,1);z-index:30;display:flex;flex-direction:column}
+#drawer.open{transform:translateX(0)}
+.dr-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 20px 14px;padding-top:calc(18px + var(--top));border-bottom:1px solid rgba(190,226,255,.25);background:#07172c}
+.dr-head small{display:block;font:600 10.5px var(--mono);letter-spacing:.15em;color:#8fd0ff;text-transform:uppercase;margin-bottom:4px}
+.dr-head h2{margin:0;font:700 20px/1.15 var(--sans);color:#fff}
+.dr-close{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(190,226,255,.4);font-size:15px;line-height:1;padding:6px 10px}
+.dr-close:hover{background:#ff6a1a;border-color:#ff6a1a}
+.dr-body{flex:1;overflow-y:auto;padding:16px 20px calc(24px + var(--bot));display:flex;flex-direction:column;gap:18px}
+.dr-sec h3{margin:0 0 6px;font:700 14.5px var(--sans);color:#fff;display:flex;align-items:center;gap:8px}
+.dr-sec h3 .num{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:4px;background:#ff6a1a;color:#fff;font:700 11px var(--mono)}
+.dr-intro{margin:0 0 12px;font:13px/1.55 var(--sans);color:#c7def5}
+.dr-intro a{color:#9fd8ff;font-weight:600;text-underline-offset:3px}
+.dr-intro a:hover{color:#ff8a47}
+.links-box{padding:12px 14px;background:rgba(255,255,255,.05);border:1px solid rgba(190,226,255,.25);border-radius:6px}
+.links-box h4{margin:0 0 8px;font:700 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#8fd0ff}
+.links-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.links-grid a{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 10px;border-radius:5px;background:rgba(11,95,176,.35);border:1px solid rgba(159,216,255,.35);color:#eaf5ff;text-decoration:none;font:600 11.5px var(--sans)}
+.links-grid a:hover{background:#ff6a1a;border-color:#ff6a1a;color:#fff}
+
+@media (max-width:720px){
+ #tb{display:table;font-size:9px}
+ #cmd{height:78px}
+ .file{display:none}
+ #rail button span{display:none}
+ .scard{left:12px;right:12px;width:auto;max-height:66vh;padding:15px 16px}
+ .links-grid{grid-template-columns:1fr}
+ #fab{font-size:10px;padding:6px 10px}
+}
+
+/* ===== Améliorations de lisibilité (texte plus grand, cartes plus larges, meilleur contraste) ===== */
+#hero{width:min(780px,92vw);padding:30px 34px}
+#hero small{font-size:12.5px}
+#hero h1{font-size:clamp(28px,5vw,52px)}
+#hero .sub{font-size:17px;line-height:1.45}
+#hero p{font-size:16.5px;line-height:1.6;max-width:660px;color:#d6e8f8}
+.hero-links a,.hero-links button{font-size:13px;padding:8px 14px}
+#hint{font-size:15px;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.scard{width:min(540px,calc(100vw - 56px));max-height:80vh;padding:22px 24px;scrollbar-width:thin}
+.scard .kicker{font-size:12px}
+.scard h2{font-size:24px;line-height:1.22}
+.scard .lead{font-size:16px;line-height:1.6;color:#dcecfa}
+.exp-item{padding:13px 14px}
+.exp-head strong{font-size:16.5px;line-height:1.3}
+.badge{font-size:12px;padding:3px 9px}
+.exp-item p{font-size:15px;line-height:1.55;color:#d6e8f8}
+.tags span{font-size:12px;padding:3px 8px}
+.ext-link,.proj-btn{font-size:13px;padding:6px 11px}
+#tb{font-size:12.5px}
+#tb td{padding:3px 9px}
+#rail button{font-size:12px}
+#drawer{width:min(580px,96vw)}
+.dr-head h2{font-size:23px}
+.dr-head small{font-size:12px}
+.dr-sec h3{font-size:17px;line-height:1.3}
+.dr-intro{font-size:15.5px;line-height:1.6}
+.links-box h4{font-size:12.5px}
+.links-grid a{font-size:13.5px;padding:9px 11px}
+#cmd{font-size:13.5px}
+button{font-size:13.5px}
+@media (max-width:720px){
+ #hero{padding:20px 18px}#hero p{font-size:15px}#hero .sub{font-size:15px}
+ .scard{padding:16px 16px;max-height:70vh}.scard h2{font-size:21px}.exp-item p{font-size:14.5px}.scard .lead{font-size:15px}
+ #tb{font-size:10.5px}
+}
+</style>
+</head>
+<body>
+<div id="scroll"></div>
+<div id="app">
+ <header id="rib">
+  <span class="file">02_Parcours_A.dwg</span>
+  <button type="button" id="bDossier" class="primary">Dossier Parcours (A)</button>
+  <button type="button" id="bGrid" aria-pressed="true">Grille</button>
+  <button type="button" id="bTop">↑ Fiche 2D</button>
+ </header>
+
+ <button type="button" id="fab" aria-controls="drawer" aria-expanded="false"><span class="dot"></span>02 · Dossier Parcours &amp; Liens</button>
+
+ <div id="vp">
+  <canvas id="gl" tabindex="0" aria-label="Modèle 3D du plan 02 — Parcours (Lettre A) : bras robotisé et machine de synthèse des expériences de terrain. Glisser ou flèches : orbiter. Molette ou plus et moins : zoomer."></canvas>
+  <div id="frame"></div><div id="sheetline"></div>
+  <div class="vf" id="vA"><b>VUE DE FACE · PARCOURS A</b></div>
+  <div class="vf" id="vB"><b>VUE DE DESSU</b></div>
+  <div class="vf" id="vC"><b>VUE DE DROITE</b></div>
+  <div id="vlabel"></div>
+
+  <div id="hero">
+   <small>DOSSIER 02 · LETTRE A · PLAN P-02 · EXPÉRIENCES DE TERRAIN</small>
+   <h1>02 — PARCOURS</h1>
+   <div class="sub">Stages d’observation en entreprise (WEX · EEB3) &amp; Encadrement de stages sportifs (Action Sport)</div>
+   <p>Des premières immersions techniques à l’<b>IBPT</b>, à l’<b>AfricaMuseum</b> et chez <b>MSF (Télécoms)</b> jusqu’à l’animation de groupes chez <b>Action Sport</b>. <b>Faites défiler</b> pour explorer chaque étape du plan 2D au rendu 3D, ou ouvrez directement le dossier complet.</p>
+   <div class="hero-links">
+    <button type="button" class="cta" id="heroOpen">Ouvrir le dossier complet</button>
+    <a href="https://www.eeb3.eu/" target="_blank" rel="noopener noreferrer">EEB3 ↗</a>
+    <a href="https://www.ibpt.be/" target="_blank" rel="noopener noreferrer">IBPT ↗</a>
+    <a href="https://www.africamuseum.be/" target="_blank" rel="noopener noreferrer">AfricaMuseum ↗</a>
+    <a href="https://www.msf-azg.be/fr" target="_blank" rel="noopener noreferrer">MSF Télécoms ↗</a>
+    <a href="https://www.actionsport.be/" target="_blank" rel="noopener noreferrer">Action Sport ↗</a>
+   </div>
+  </div>
+
+  <!-- Carte narrative 1 : Stages d'observation WEX -->
+  <section class="scard" id="cardWex" aria-label="Stages d'observation en entreprise WEX">
+   <div class="kicker"><span>02.1 · IMMERSIONS PROFESSIONNELLES</span><span>3 STAGES WEX</span></div>
+   <h2>Stages d’observation — École Européenne de Bruxelles III</h2>
+   <p class="lead">Dans le cadre du programme WEX de l’<a href="https://www.eeb3.eu/" target="_blank" rel="noopener noreferrer">École Européenne de Bruxelles III (EEB3) ↗</a>, trois stages d’immersion de 1 à 2 semaines ont été réalisés durant le cycle secondaire afin de découvrir le monde du travail, le fonctionnement d’équipes techniques et des environnements professionnels exigeants.</p>
+   <div class="exp-list">
+    <article class="exp-item">
+     <div class="exp-head"><strong>IBPT — Régulateur Télécoms &amp; Postal</strong><span class="badge">1 semaine</span></div>
+     <p>Découverte de l’Institut belge des services postaux et des télécommunications : observation des équipes techniques, suivi des infrastructures réseaux, gestion du spectre radioélectrique et enjeux de régulation en Belgique.</p>
+     <div class="exp-acts">
+      <a class="ext-link" href="https://www.ibpt.be/" target="_blank" rel="noopener noreferrer">ibpt.be ↗</a>
+      <button type="button" class="proj-btn" data-exp="0">Afficher en 3D ▸</button>
+     </div>
+    </article>
+    <article class="exp-item">
+     <div class="exp-head"><strong>AfricaMuseum — Tervuren</strong><span class="badge">2 semaines</span></div>
+     <p>Immersion de deux semaines au Musée royal de l’Afrique centrale : découverte d’une grande institution scientifique et culturelle fédérale, organisation d’équipes pluridisciplinaires et coulisses techniques des expositions et collections.</p>
+     <div class="exp-acts">
+      <a class="ext-link" href="https://www.africamuseum.be/" target="_blank" rel="noopener noreferrer">africamuseum.be ↗</a>
+      <button type="button" class="proj-btn" data-exp="1">Afficher en 3D ▸</button>
+     </div>
+    </article>
+    <article class="exp-item">
+     <div class="exp-head"><strong>MSF — Médecins Sans Frontières (Pôle Télécoms)</strong><span class="badge">Immersion Télécom</span></div>
+     <p>Découverte du département télécommunications au service des missions humanitaires : systèmes de radiocommunication, liaisons satellites, réseaux informatiques d’urgence et support technique aux équipes déployées sur le terrain.</p>
+     <div class="exp-acts">
+      <a class="ext-link" href="https://www.msf-azg.be/fr" target="_blank" rel="noopener noreferrer">msf-azg.be ↗</a>
+      <button type="button" class="proj-btn" data-exp="2">Afficher en 3D ▸</button>
+     </div>
+    </article>
+   </div>
+  </section>
+
+  <!-- Carte narrative 2 : Animateur Action Sport -->
+  <section class="scard" id="cardAction" aria-label="Animateur et encadrant de stages chez Action Sport">
+   <div class="kicker"><span>02.2 · ENCADREMENT &amp; ANIMATION</span><span>TERRAIN</span></div>
+   <h2>Animateur / Encadrant de stages — Action Sport</h2>
+   <p class="lead">Expérience active sur le terrain au sein d’<a href="https://www.actionsport.be/" target="_blank" rel="noopener noreferrer">Action Sport ASBL ↗</a> lors de stages sportifs et de vacances accueillant des enfants et des jeunes.</p>
+   <div class="exp-list">
+    <article class="exp-item">
+     <div class="exp-head"><strong>Stages sportifs &amp; multi-activités de vacances</strong><span class="badge">Encadrement</span></div>
+     <p>Prise en charge complète de groupes au quotidien : planification et animation de séances sportives et ludiques, adaptation pédagogique selon les tranches d’âge, vigilance constante sur la sécurité physique et création d’une dynamique collective bienveillante.</p>
+     <div class="tags">
+      <span>Gestion de groupe</span><span>Pédagogie active</span><span>Sécurité</span><span>Organisation d’activités</span>
+     </div>
+     <div class="exp-acts">
+      <a class="ext-link" href="https://www.actionsport.be/" target="_blank" rel="noopener noreferrer">actionsport.be ↗</a>
+      <button type="button" class="proj-btn" data-exp="3">Afficher en 3D ▸</button>
+     </div>
+    </article>
+   </div>
+  </section>
+
+  <div id="hint">Faites défiler pour explorer 02 — Parcours ↓</div>
+  <div id="dims"></div>
+  <div id="cubeWrap"><div id="cube">
+   <div class="fF" data-v="0,0">FACE</div><div class="fB" data-v="3.1416,0">ARRIÈRE</div><div class="fR" data-v="1.5708,0">DROITE</div>
+   <div class="fL" data-v="-1.5708,0">GAUCHE</div><div class="fT" data-v="0,1.5">DESSUS</div><div class="fD" data-v="0,-1.5">DESSOUS</div>
+  </div><button id="home" type="button" aria-label="Vue isométrique">⌂</button></div>
+  <svg id="ucs" viewBox="0 0 90 80" aria-hidden="true">
+   <line id="ux" x1="24" y1="56" stroke="#d62828" stroke-width="2"/><line id="uy" x1="24" y1="56" stroke="#2a9d3f" stroke-width="2"/><line id="uz" x1="24" y1="56" stroke="#1d5fd6" stroke-width="2"/>
+   <text id="tx" fill="#d62828">X</text><text id="ty" fill="#2a9d3f">Y</text><text id="tz" fill="#1d5fd6">Z</text>
+  </svg>
+  <table id="tb">
+   <tr><td colspan="2" style="text-align:center;font-weight:700;letter-spacing:.1em;color:#fff">02 — PARCOURS (LETTRE A)</td></tr>
+   <tr><td>Candidat</td><td>Marko Cordi</td></tr>
+   <tr><td>Plan n°</td><td>P-02 · Lettre A</td></tr>
+   <tr><td>Thème</td><td>Expériences de terrain</td></tr>
+   <tr><td>Stages WEX</td><td>IBPT · AfricaMuseum · MSF</td></tr>
+   <tr><td>Animation</td><td>Action Sport (stages)</td></tr>
+   <tr><td>Cadre</td><td>EEB3 · format A3 · 1:10</td></tr>
+  </table>
+ </div>
+
+ <div id="cmd"><div id="log" role="log" aria-live="polite"></div>
+  <label><span>Commande :</span><input id="cin" autocomplete="off" aria-label="Ligne de commande" placeholder="PARCOURS, IBPT, AFRICA, MSF, ACTION, LANCER, ISO, AIDE…"></label></div>
+ <footer id="status"><span id="coords" aria-label="Coordonnées de l’outil"></span>
+  <button id="bGo" type="button">Lancer une fiche</button><button id="bAuto" type="button" aria-pressed="true">Répétition auto</button></footer>
+</div>
+
+<!-- Panneau latéral complet avec tout le texte et tous les liens -->
+<div id="drawerBack"></div>
+<aside id="drawer" aria-label="Dossier complet 02 — Parcours (Lettre A)">
+ <div class="dr-head">
+  <div>
+   <small>02 — PARCOURS · LETTRE A</small>
+   <h2>Expériences de terrain</h2>
+  </div>
+  <button type="button" class="dr-close" id="drClose" aria-label="Fermer le dossier">✕</button>
+ </div>
+ <div class="dr-body">
+  <section class="dr-sec">
+   <h3><span class="num">1</span>Stages d’observation en entreprise (3 stages WEX)</h3>
+   <p class="dr-intro">Trois immersions professionnelles de 1 à 2 semaines réalisées durant le cycle secondaire à l’<a href="https://www.eeb3.eu/" target="_blank" rel="noopener noreferrer">École Européenne de Bruxelles III (EEB3) ↗</a> dans le cadre du programme Work Experience (WEX). Objectif : découvrir le fonctionnement concret d’organisations majeures, observer des équipes techniques sur le terrain et appréhender les exigences du monde professionnel.</p>
+   <div class="exp-list">
+    <article class="exp-item">
+     <div class="exp-head"><strong>IBPT — Institut belge des services postaux et des télécommunications</strong><span class="badge">1 semaine</span></div>
+     <p>Immersion d’une semaine au cœur du régulateur fédéral des télécommunications et du marché postal. Découverte des missions d’ingénierie et de contrôle, de la gestion des fréquences radioélectriques, de la qualité des réseaux mobiles/fixes et de la coordination entre équipes techniques et juridiques.</p>
+     <div class="tags"><span>Télécommunications</span><span>Régulation</span><span>Spectre radio</span><span>Réseaux</span></div>
+     <div class="exp-acts">
+      <a class="ext-link" href="https://www.ibpt.be/" target="_blank" rel="noopener noreferrer">Site officiel IBPT ↗</a>
+      <button type="button" class="proj-btn" data-exp="0">Projeter sur la machine 3D ▸</button>
+     </div>
+    </article>
+
+    <article class="exp-item">
+     <div class="exp-head"><strong>AfricaMuseum — Musée royal de l’Afrique centrale (Tervuren)</strong><span class="badge">2 semaines</span></div>
+     <p>Stage d’observation de deux semaines au sein de cette institution scientifique et culturelle de référence. Découverte de la gestion quotidienne d’un grand établissement fédéral, de l’organisation des départements de recherche et de conservation, ainsi que des aspects techniques et logistiques liés aux expositions.</p>
+     <div class="tags"><span>Institution scientifique</span><span>Organisation</span><span>Logistique</span><span>Travail d’équipe</span></div>
+     <div class="exp-acts">
+      <a class="ext-link" href="https://www.africamuseum.be/" target="_blank" rel="noopener noreferrer">Site AfricaMuseum ↗</a>
+      <button type="button" class="proj-btn" data-exp="1">Projeter sur la machine 3D ▸</button>
+     </div>
+    </article>
+
+    <article class="exp-item">
+     <div class="exp-head"><strong>MSF — Médecins Sans Frontières (Pôle Télécoms)</strong><span class="badge">Pôle Télécoms</span></div>
+     <p>Immersion au sein de l’équipe télécommunications de Médecins Sans Frontières. Observation des solutions de connectivité critiques déployées sur les terrains humanitaires : radiocommunications HF/VHF, communications satellitaires, réseaux informatiques robustes et préparation du matériel destiné aux missions d’urgence.</p>
+     <div class="tags"><span>Télécoms d’urgence</span><span>Radio &amp; Satellite</span><span>Support terrain</span><span>Humanitaire</span></div>
+     <div class="exp-acts">
+      <a class="ext-link" href="https://www.msf-azg.be/fr" target="_blank" rel="noopener noreferrer">Site MSF Belgique ↗</a>
+      <button type="button" class="proj-btn" data-exp="2">Projeter sur la machine 3D ▸</button>
+     </div>
+    </article>
+   </div>
+  </section>
+
+  <section class="dr-sec">
+   <h3><span class="num">2</span>Animateur / Encadrant de stages — Action Sport</h3>
+   <p class="dr-intro">Engagement régulier comme animateur et encadrant de groupes lors des stages sportifs et de vacances organisés par <a href="https://www.actionsport.be/" target="_blank" rel="noopener noreferrer">Action Sport ASBL ↗</a>.</p>
+   <div class="exp-list">
+    <article class="exp-item">
+     <div class="exp-head"><strong>Encadrement de stages sportifs &amp; vacances</strong><span class="badge">Action Sport</span></div>
+     <p>Gestion autonome de groupes d’enfants et de jeunes tout au long de la semaine : préparation et animation de séances sportives et de grands jeux, transmission pédagogique adaptée à l’âge des participants, respect strict des règles de sécurité, esprit d’équipe avec les co-animateurs et communication avec les parents.</p>
+     <div class="tags"><span>Gestion de groupe</span><span>Pédagogie</span><span>Sécurité</span><span>Animation sportive</span><span>Responsabilité</span></div>
+     <div class="exp-acts">
+      <a class="ext-link" href="https://www.actionsport.be/" target="_blank" rel="noopener noreferrer">Site Action Sport ↗</a>
+      <button type="button" class="proj-btn" data-exp="3">Projeter sur la machine 3D ▸</button>
+     </div>
+    </article>
+   </div>
+  </section>
+
+  <section class="links-box">
+   <h4>Accès direct aux liens du parcours</h4>
+   <div class="links-grid">
+    <a href="https://www.eeb3.eu/" target="_blank" rel="noopener noreferrer"><span>École Européenne III (EEB3)</span><span>↗</span></a>
+    <a href="https://www.ibpt.be/" target="_blank" rel="noopener noreferrer"><span>IBPT · Télécoms</span><span>↗</span></a>
+    <a href="https://www.africamuseum.be/" target="_blank" rel="noopener noreferrer"><span>AfricaMuseum</span><span>↗</span></a>
+    <a href="https://www.msf-azg.be/fr" target="_blank" rel="noopener noreferrer"><span>MSF · Télécoms</span><span>↗</span></a>
+    <a href="https://www.actionsport.be/" target="_blank" rel="noopener noreferrer"><span>Action Sport ASBL</span><span>↗</span></a>
+   </div>
+  </section>
+ </div>
+</aside>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+'use strict';
+/* ═════ 1. CONSTANTES (unités : cm ; affichage en mm) ═════ */
+const T = THREE, DEG = Math.PI / 180, TAU = Math.PI * 2;
+const rm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SPEED = rm ? .6 : 1;
+const BASE = new T.Vector3(-70, 0, 0), SHOULDER_Y = 30, L1 = 55, L2 = 50, L3 = 9;
+const GRIP_OPEN = 7.5, GRIP_HOLD = 4.4;
+const HOPPER = new T.Vector3(60, 70, -10), FLIGHT = .8, GRAV = 400;
+const HOME_VIEW = {th:.75, ph:.45, r:300, target:new T.Vector3(18, 46, -4)};
+const C = {orange:0xff6a1a, dark:0x2d3138, grey:0xdfe3e8, steel:0xb9c0c9, gear:0x98a2ae, tray:0xcbd1d8};
+const SHAPES = [() => new T.BoxGeometry(8,8,8), () => {const g = new T.SphereGeometry(4.6,16,10);g.userData.thr = 10;return g;}, () => new T.OctahedronGeometry(5.4), () => new T.IcosahedronGeometry(5)];
+const ITEM_COLORS = [0x2f6bff, 0x12b886, 0xf5b400, 0xe0457b, 0x7a5cff];
+
+const EXPERIENCES = [
+ {
+  code:'WEX-01 · IBPT (1 SEM.)',
+  title:'IBPT · Régulateur Télécoms',
+  url:'https://www.ibpt.be/',
+  text:'Stage WEX (1 semaine) à l’IBPT : découverte du régulateur belge des télécommunications, gestion du spectre radio et équipes réseaux.'
+ },
+ {
+  code:'WEX-02 · AFRICAMUSEUM (2 SEM.)',
+  title:'AfricaMuseum · Tervuren',
+  url:'https://www.africamuseum.be/',
+  text:'Stage WEX (2 semaines) à l’AfricaMuseum : immersion au sein d’une institution scientifique fédérale, organisation interne et support technique.'
+ },
+ {
+  code:'WEX-03 · MSF TÉLÉCOMS',
+  title:'MSF · Pôle Télécoms',
+  url:'https://www.msf-azg.be/fr',
+  text:'Stage WEX chez Médecins Sans Frontières (partie télécom) : radiocommunications, liaisons satellites et réseaux d’urgence sur le terrain.'
+ },
+ {
+  code:'TERRAIN · ACTION SPORT',
+  title:'Animateur · Action Sport',
+  url:'https://www.actionsport.be/',
+  text:'Animateur et encadrant de stages sportifs chez Action Sport : gestion de groupe, pédagogie active, sécurité et organisation d’activités.'
+ },
+ {
+  code:'CADRE · EEB3 (WEX)',
+  title:'École Européenne Bxl III',
+  url:'https://www.eeb3.eu/',
+  text:'Cycle secondaire à l’EEB3 : 3 immersions professionnelles WEX pour découvrir les environnements techniques et le travail en équipe.'
+ }
+];
+
+const K = {
+ home:{p:[-42,52,24],psi:-60}, above:{p:[-25,32,28],psi:-90}, grab:{p:[-25,14.2,28],psi:-90}, lift:{p:[-25,40,28],psi:-90},
+ wind:{p:[-48,70,8],psi:100}, throw:{p:[-5,60,-3],psi:25}, follow:{p:[14,66,-6],psi:5}
+};
+
+/* ═════ 2. OUTILS ═════ */
+const $ = id => document.getElementById(id);
+const lerp = (a, b, t) => a + (b - a) * t, clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const inOut = t => t < .5 ? 2*t*t : 1 - 2*(1-t)*(1-t), easeIn = t => t*t*t, easeOut = t => 1 - Math.pow(1-t, 3), linear = t => t;
+let pending = [], dt = 0, now = 0;
+const tween = (d, fn, ease = inOut) => new Promise(res => {
+ let t = 0;
+ const step = () => {t += dt; const p = Math.min(1, t / (d * SPEED)); fn(ease(p)); p < 1 ? pending.push(step) : res();};
+ pending.push(step);
+});
+const wait = d => tween(d, () => {}, linear);
+function log(s, cls){const el = $('log'), d = document.createElement('div');d.textContent = s;if(cls)d.className = cls;el.appendChild(d);while(el.children.length > 40)el.firstChild.remove();el.scrollTop = el.scrollHeight;}
+
+/* ═════ 3. SCÈNE ET MODÈLE 3D ═════ */
+const canvas = $('gl'), vp = $('vp');
+const renderer = new T.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));renderer.setClearColor(0xffffff, 1);renderer.outputEncoding = T.sRGBEncoding;
+renderer.shadowMap.enabled = true;renderer.shadowMap.type = T.PCFSoftShadowMap;renderer.shadowMap.autoUpdate = false;
+const scene = new T.Scene();
+scene.add(new T.HemisphereLight(0xffffff, 0xb4bcc8, .95));
+const sun = new T.DirectionalLight(0xffffff, .75);sun.position.set(90, 170, 110);sun.castShadow = true;sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, {left:-170, right:170, top:170, bottom:-170, near:10, far:500});scene.add(sun);
+const persp = new T.PerspectiveCamera(30, 1, 5, 3000);
+let cam = persp;
+let nSolid = 0, NSTATIC = 1e9;const solids = [], EDGE_MAT = new T.LineBasicMaterial({color:0x111111});
+
+function solid(geo, color, parent, x = 0, y = 0, z = 0, rot = [0, 0, 0], side = T.FrontSide){
+ const mat = new T.MeshStandardMaterial({color, roughness:.55, metalness:.25, side, polygonOffset:true, polygonOffsetFactor:1, polygonOffsetUnits:1});
+ const mesh = new T.Mesh(geo, mat), edges = new T.LineSegments(new T.EdgesGeometry(geo, geo.userData.thr || 30), EDGE_MAT);
+ mesh.position.set(x, y, z);mesh.rotation.set(...rot);mesh.castShadow = mesh.receiveShadow = true;mesh.add(edges);parent.add(mesh);
+ solids.push({mesh, edges, n:nSolid++});return mesh;
+}
+const cyl = (r1, r2, h, seg = 16, open = false) => {const g = new T.CylinderGeometry(r1, r2, h, seg, 1, open);g.userData.thr = 20;return g;};
+const AX_Z = [Math.PI/2, 0, 0], AX_X = [0, 0, Math.PI/2];
+
+const floor = new T.Mesh(new T.PlaneGeometry(700, 700), new T.ShadowMaterial({opacity:.18}));floor.rotation.x = -Math.PI/2;floor.receiveShadow = true;scene.add(floor);
+const grid = new T.GridHelper(400, 40, 0x9aa3b0, 0xd9dde3);grid.position.y = .02;scene.add(grid);
+
+const B = (w, h, d) => new T.BoxGeometry(w, h, d), YEL = 0xf2c200, RED = 0xd62828;
+function bolts(p, x, y, z, R, n, plane = 'xy'){
+ for(let i = 0; i < n; i++){const a = i/n*TAU, c = R*Math.cos(a), q = R*Math.sin(a);
+  plane === 'xy' ? solid(cyl(.6, .6, 1, 8), 0x3a3f48, p, x + c, y + q, z, AX_Z) : solid(cyl(.6, .6, 1, 8), 0x3a3f48, p, x + c, y, z + q);}
+}
+const robot = new T.Group();robot.position.copy(BASE);scene.add(robot);
+solid(B(38, 2, 38), C.dark, robot, 0, 1, 0);solid(cyl(17, 18, 4, 24), C.steel, robot, 0, 4, 0);solid(cyl(12.5, 12.5, 2, 24), C.dark, robot, 0, 7, 0);bolts(robot, 0, 5.2, 0, 15, 8, 'xz');
+for(const [x, z] of [[-16,-16],[16,-16],[-16,16],[16,16]])solid(cyl(1.4, 1.4, 1.2, 8), C.steel, robot, x, 2.6, z);
+const turret = new T.Group();robot.add(turret);
+solid(cyl(10, 11, 24, 24), C.steel, turret, 0, 14, 0);
+for(let i = 0; i < 4; i++){const a = i*Math.PI/2 + .6;solid(B(2.4, 18, 5), C.dark, turret, 11.4*Math.cos(a), 14, 11.4*Math.sin(a), [0, -a, 0]);}
+solid(B(18, 14, 22), C.dark, turret, 0, SHOULDER_Y, 0);
+for(const z of [-11.6, 11.6])solid(B(14, 10, 1.2), C.steel, turret, 0, SHOULDER_Y, z);
+solid(cyl(5, 5, 11), C.steel, turret, -14, SHOULDER_Y, 0, AX_X);solid(cyl(3, 3, 3, 12), C.dark, turret, -20.5, SHOULDER_Y, 0, AX_X);
+for(let i = 0; i < 5; i++)solid(cyl(6.4, 6.4, .8), C.gear, turret, -10 - i*1.9, SHOULDER_Y, 0, AX_X);
+solid(B(5, 4, 5), C.dark, turret, 0, SHOULDER_Y + 9, 0);
+const shoulder = new T.Group();shoulder.position.y = SHOULDER_Y;turret.add(shoulder);
+solid(cyl(8.5, 8.5, 24, 24), C.dark, shoulder, 0, 0, 0, AX_Z);
+for(const z of [-12.6, 12.6]){solid(cyl(4, 4, 1.6, 12), C.steel, shoulder, 0, 0, z, AX_Z);bolts(shoulder, 0, 0, z, 6.3, 8);}
+solid(B(L1, 9, 12), C.orange, shoulder, L1/2, 0, 0);solid(B(L1 - 20, .8, 9), C.dark, shoulder, L1/2, 4.8, 0);
+for(const x of [10, L1 - 6])solid(B(3, 11, 14), C.dark, shoulder, x, 0, 0);
+for(const z of [-6.4, 6.4])for(let i = 0; i < 3; i++)solid(B(7, 4, .8), C.dark, shoulder, 18 + i*11, 0, z);
+const elbow = new T.Group();elbow.position.x = L1;shoulder.add(elbow);
+solid(cyl(7.5, 7.5, 16, 24), C.dark, elbow, 0, 0, 0, AX_Z);
+for(const z of [-9, 9]){solid(cyl(3.6, 3.6, 2, 12), C.steel, elbow, 0, 0, z, AX_Z);bolts(elbow, 0, 0, z, 5.4, 6);}
+solid(B(L2, 7, 9), C.orange, elbow, L2/2, 0, 0);solid(B(L2 - 14, .8, 7), C.dark, elbow, L2/2, 3.9, 0);
+for(let i = 0; i < 4; i++)solid(B(1.2, 4.2, 9.6), C.dark, elbow, 14 + i*6, 0, 0);
+solid(cyl(1.3, 1.3, L2 - 18, 10), C.steel, elbow, L2/2, 5.6, 0, AX_X);for(const x of [9, L2 - 9])solid(B(2.4, 3, 2.4), C.dark, elbow, x, 4.4, 0);
+const wrist = new T.Group();wrist.position.x = L2;elbow.add(wrist);
+solid(cyl(5.5, 5.5, 12, 20), C.dark, wrist, 0, 0, 0, AX_Z);solid(cyl(3.5, 3.5, 3, 12), C.steel, wrist, 3, 0, 0, AX_X);solid(B(3, 10, 8.5), C.dark, wrist, 5, 0, 0);
+solid(B(4, 2.6, 3), C.steel, wrist, 1, 6.5, 0);solid(cyl(.9, .9, 1.4, 12), C.dark, wrist, 3.5, 6.5, 0, AX_X);
+const fingers = [-1, 1].map(sg => {const f = solid(B(9, 7, 1.6), C.dark, wrist, 10, 0, 0);solid(B(7, 5, .5), C.steel, f, 0, 0, -sg*1.05);return f;});
+
+// Cellule robotisée, armoire et câblage
+solid(B(18, 1.5, 18), C.dark, scene, -25, .75, 28);solid(B(12, 7, 12), C.tray, scene, -25, 5, 28);solid(B(15, 1.5, 15), C.steel, scene, -25, 9.25, 28);
+for(const [x, z, w, d] of [[-54,-38,92,1.6],[-54,38,92,1.6],[-100,0,1.6,76],[-8,0,1.6,76]])solid(B(w, .3, d), YEL, scene, x, .15, z);
+for(const x of [-100, -54, -8])solid(B(1.8, 34, 1.8), YEL, scene, x, 17, -38);
+for(const y of [18, 32])solid(B(92, 1.4, 1.4), YEL, scene, -54, y, -38);
+solid(B(28, 3, 14), C.dark, scene, -52, 1.5, -30);solid(B(26, 38, 12), C.grey, scene, -52, 22, -30);
+for(const sx of [-6.4, 6.4])solid(B(12, 34, .8), C.tray, scene, -52 + sx, 22, -23.6);
+for(const x of [-54.6, -49.4])solid(B(1, 6, 1.4), C.dark, scene, x, 22, -22.8);
+for(let i = 0; i < 5; i++)solid(B(8, .7, .8), C.dark, scene, -58.4, 32 + i*1.6, -23.4);
+solid(cyl(1.2, 1.2, 1, 10), 0x12b886, scene, -45.4, 36, -23.2, AX_Z);
+const cab = new T.TubeGeometry(new T.CatmullRomCurve3([new T.Vector3(-52,5,-24), new T.Vector3(-58,1.5,-21), new T.Vector3(-66,2,-19), new T.Vector3(-70,4,-17.6)]), 24, 1, 8);cab.userData.thr = 20;solid(cab, C.dark, scene);
+
+const machG = new T.Group();scene.add(machG);
+solid(B(54, 5, 54), C.dark, machG, 60, 2.5, -10);solid(B(50, 40, 50), C.grey, machG, 60, 25, -10);
+solid(B(52, 2.5, 52), C.steel, machG, 60, 43.75, -10);solid(B(51, 1, 51), C.dark, machG, 60, 40.5, -10);
+for(let i = 0; i < 7; i++)solid(B(.8, .9, 22), C.dark, machG, 85.3, 25 + i*2.2, -10);
+solid(cyl(20, 8, 25, 4, true), C.steel, machG, 60, 57.5, -10, [0, Math.PI/4, 0], T.DoubleSide);
+for(const k of [-1, 1]){solid(B(30.5, 1.6, 1.8), C.dark, machG, 60, 70, -10 + k*14.4);solid(B(1.8, 1.6, 26.6), C.dark, machG, 60 + k*14.4, 70, -10);}
+solid(B(2, 3, 22), 0x111111, machG, 85.2, 18.4, -10);solid(B(1, 7, 27), C.steel, machG, 85.5, 18.4, -10);
+solid(B(30, 13, 1), C.dark, machG, 62, 34, 15.5);
+const dispCv = document.createElement('canvas');dispCv.width = 256;dispCv.height = 96;
+const dispTex = new T.CanvasTexture(dispCv), dispMesh = new T.Mesh(new T.PlaneGeometry(26, 9.75), new T.MeshBasicMaterial({map:dispTex}));
+dispMesh.position.set(62, 34, 16.1);machG.add(dispMesh);
+for(let i = 0; i < 3; i++)solid(cyl(1.7, 1.7, 2, 12), C.steel, machG, 53 + i*6, 25.5, 16, AX_Z);
+solid(cyl(1.3, 1.3, 1.6, 10), 0x12b886, machG, 71, 25.5, 15.8, AX_Z);solid(cyl(1.3, 1.3, 1.6, 10), RED, machG, 75, 25.5, 15.8, AX_Z);
+solid(cyl(3.6, 3.6, 1.4, 16), YEL, machG, 80, 26, 15.7, AX_Z);solid(cyl(2.6, 2.6, 2.4, 16), RED, machG, 80, 26, 17, AX_Z);
+const lamp = solid(cyl(2.2, 2.2, 2.4, 16), 0xb8bec7, machG, 80, 39, 16.2, AX_Z);
+function gearGeo(r, teeth, h){
+ const s = new T.Shape(), n = teeth * 4;
+ for(let i = 0; i < n; i++){const a = i / n * TAU, rr = (i % 4 === 1 || i % 4 === 2) ? r + h : r;i ? s.lineTo(rr*Math.cos(a), rr*Math.sin(a)) : s.moveTo(rr*Math.cos(a), rr*Math.sin(a));}
+ s.closePath();const hole = new T.Path();hole.absarc(0, 0, r*.28, 0, TAU, true);s.holes.push(hole);
+ return new T.ExtrudeGeometry(s, {depth:2.2, bevelEnabled:false});
+}
+const g1 = solid(gearGeo(7.5, 12, 2), C.gear, machG, 48, 14, 16), g2 = solid(gearGeo(5.6, 9, 2), C.steel, machG, 48 + 13.6*Math.cos(25*DEG), 14 + 13.6*Math.sin(25*DEG), 16);
+solid(B(30, 23, 1), C.dark, machG, 56, 16, 15.5);solid(cyl(1.6, 1.6, 2.4, 10), C.dark, machG, 48, 14, 18.4, AX_Z);solid(cyl(1.6, 1.6, 2.4, 10), C.dark, machG, 48 + 13.6*Math.cos(25*DEG), 14 + 13.6*Math.sin(25*DEG), 18.4, AX_Z);
+solid(B(12, 13, 12), C.dark, machG, 27, 6.5, -10);solid(cyl(7, 7, 16), C.steel, machG, 27, 20, -10, AX_X);
+for(let i = 0; i < 6; i++)solid(cyl(8.4, 8.4, .9), C.gear, machG, 21 + i*2.6, 20, -10, AX_X);
+solid(cyl(5, 5, 3, 12), C.dark, machG, 17.5, 20, -10, AX_X);solid(B(8, 5, 8), C.dark, machG, 29, 27.8, -10);
+solid(cyl(2.6, 2.6, 1.6, 12), C.dark, machG, 79, 45.8, 8);
+[[0x12b886, 48.4], [0xf5b400, 51.9], [RED, 55.4]].forEach(([c, y]) => solid(cyl(2.4, 2.4, 3.5, 12), c, machG, 79, y, 8));
+solid(cyl(2.4, 2.4, 1, 12), C.dark, machG, 79, 57.6, 8);
+solid(cyl(4, 4, 1.2), C.dark, machG, 42, 45.6, -28);solid(cyl(2.8, 2.8, 16), C.steel, machG, 42, 53, -28);solid(cyl(3.6, 3.6, 1.6), C.dark, machG, 42, 61.8, -28);
+solid(B(34, 1, 26), C.tray, scene, 104, 16.5, -10);
+for(const z of [-23.5, 3.5])solid(B(34, 3, 1), C.tray, scene, 104, 18, z);solid(B(1, 3, 27), C.tray, scene, 121.5, 18, -10);
+for(const [x, z] of [[90,-21],[118,-21],[90,1],[118,1]])solid(B(2, 16, 2), C.dark, scene, x, 8, z);
+
+solid(B(66, .8, 66), C.tray, scene, 60, .4, -10);solid(B(46, .8, 46), C.tray, scene, -70, .4, 0);
+for(const [x, z] of [[31,-39],[89,-39],[31,19],[89,19]])solid(cyl(1.2, 1.2, .8, 8), C.steel, scene, x, 1.2, z);
+for(const [x, z] of [[36.5,-34.5],[83.5,-34.5],[36.5,14.5],[83.5,14.5]])solid(B(.9, 10, .9), C.steel, machG, x, 50, z);
+for(const y of [48, 53]){for(const z of [-34.5, 14.5])solid(B(47, .8, .8), C.steel, machG, 60, y, z);for(const x of [36.5, 83.5])solid(B(.8, .8, 49), C.steel, machG, x, y, -10);}
+for(let i = 0; i < 9; i++)solid(cyl(.5, .5, .8, 8), 0x3a3f48, machG, 38 + i*5.5, 43.75, 16.1, AX_Z);
+solid(B(10, 5, .5), C.steel, machG, 77, 14, 15.3);
+const pp = new T.TubeGeometry(new T.CatmullRomCurve3([new T.Vector3(29,30,-10), new T.Vector3(29,44,-12), new T.Vector3(36,47,-20), new T.Vector3(42,46.2,-28)]), 24, 1.2, 8);pp.userData.thr = 20;solid(pp, C.steel, machG);
+solid(B(8, 14, 16), C.dark, turret, -14, 16, 0);
+const wire = (pts, r, parent) => {const g = new T.TubeGeometry(new T.CatmullRomCurve3(pts.map(p => new T.Vector3(...p))), 20, r, 6);g.userData.thr = 20;solid(g, C.dark, parent);};
+wire([[10,5.8,3.4],[25,8,3.8],[40,7.5,3.4],[L1 - 6,5.8,3.4]], .7, shoulder);wire([[6,4.4,-3.4],[20,6.2,-3.8],[L2 - 8,4.4,-3.4]], .6, elbow);
+fingers.forEach((f, i) => {const sg = i ? 1 : -1;for(let t = -1; t <= 1; t++)solid(B(.9, 5.2, .5), C.dark, f, t*2.4, 0, -sg*1.5);});
+for(const x of [-30.5, -19.5])solid(B(1, 3, 10), C.dark, scene, x, 11.5, 28);
+
+function greeble(parent, color, items){
+ const P = [], N = [], I = [], m = new T.Matrix4(), e = new T.Euler(), q = new T.Quaternion(), sc = new T.Vector3(1, 1, 1), v = new T.Vector3();let off = 0;
+ for(const [g, x, y, z, r] of items){
+  m.compose(new T.Vector3(x, y, z), q.setFromEuler(e.set(...r)), sc);const pos = g.attributes.position, nor = g.attributes.normal;
+  for(let i = 0; i < pos.count; i++){v.fromBufferAttribute(pos, i).applyMatrix4(m);P.push(v.x, v.y, v.z);v.fromBufferAttribute(nor, i).transformDirection(m);N.push(v.x, v.y, v.z);}
+  for(const k of g.index.array)I.push(k + off);off += pos.count;
+ }
+ const G = new T.BufferGeometry();G.setAttribute('position', new T.Float32BufferAttribute(P, 3));G.setAttribute('normal', new T.Float32BufferAttribute(N, 3));G.setIndex(I);G.userData.thr = 20;
+ return solid(G, color, parent);
+}
+const gb = (w, h, d, x, y, z, r) => [B(w, h, d), x, y, z, r || [0, 0, 0]], gc = (rad, h, x, y, z, rot, seg) => [cyl(rad, rad, h, seg || 10), x, y, z, rot || [0, 0, 0]];
+const bal = [];for(let x = -96; x <= -12; x += 4)bal.push(gb(.5, 13, .5, x, 25, -38));greeble(scene, YEL, bal);
+greeble(scene, YEL, [gb(9, 9, .3, -54, 26, -39.1)]);greeble(scene, 0x111111, [gb(5, .6, .4, -54, 27.4, -39.3), gb(.6, 3, .4, -54, 25, -39.3)]);
+solid(cyl(2, 2, 3, 12), 0xff8a00, scene, -8, 35.5, -38);
+solid(B(1.6, 14, 1.6), YEL, scene, -12, 7, 30);solid(B(5, 5, 3), YEL, scene, -12, 15, 30);solid(cyl(1.6, 1.6, 1.6, 12), RED, scene, -12, 15, 31.6, AX_Z);
+greeble(scene, C.dark, [gb(5, 9, 2, -37.5, 28, -27)]);
+solid(cyl(4.5, 4.5, 6), C.steel, shoulder, 0, 0, -16.4, AX_Z);solid(cyl(3, 3, 2, 12), C.dark, shoulder, 0, 0, -20.4, AX_Z);
+greeble(shoulder, C.gear, [0, 1, 2].map(i => gc(5.6, .7, 0, 0, -14.5 - i*1.6, AX_Z, 16)));
+solid(cyl(4, 4, 5), C.steel, elbow, 0, 0, 12.5, AX_Z);solid(cyl(2.6, 2.6, 2, 12), C.dark, elbow, 0, 0, 15.5, AX_Z);
+greeble(elbow, C.gear, [0, 1].map(i => gc(5, .7, 0, 0, 10.8 + i*1.6, AX_Z, 16)));
+const hb = [];for(const y of [53, 60, 66.5]){const h = 5.65 + .34*(y - 45) + .5;for(const k of [-1, 1])hb.push(gb(2*h + 1.4, 1.3, 1.3, 60, y, -10 + k*h), gb(1.3, 1.3, 2*h + 1.4, 60 + k*h, y, -10));}greeble(machG, C.dark, hb);
+const rb = [gb(30, 1.2, 6, 63, 46, -31)];for(let x = 50; x <= 76; x += 3)rb.push(gb(.6, 1.8, 6, x, 47, -31));greeble(machG, C.steel, rb);
+solid(B(12, 8, 8), C.steel, machG, 74, 50, -22);greeble(machG, C.dark, [gb(10, 6, .4, 74, 50, -17.8), ...[[69.5, 47.5], [78.5, 47.5], [69.5, 52.5], [78.5, 52.5]].map(([x, y]) => gc(.5, .6, x, y, -17.6, AX_Z, 8))]);
+wire([[74,46,-18],[79,46.6,-8],[79,46.4,6]], .7, machG);
+solid(B(.6, 10, 32), C.steel, machG, 85.3, 9, -10);greeble(machG, C.dark, [gb(.9, 1.4, 10, 85.7, 9, -10), gb(.9, 2, 1.6, 85.7, 12.5, -24), gb(.9, 2, 1.6, 85.7, 5.5, -24), gb(.9, 2, 1.6, 85.7, 12.5, 4), gb(.9, 2, 1.6, 85.7, 5.5, 4)]);
+solid(cyl(3.3, 3.3, 1.6, 20), C.steel, machG, 80, 8, 15.6, AX_Z);solid(B(.4, 2.6, .4), RED, machG, 80.5, 9, 16.6, [0, 0, -.8]);
+greeble(machG, 0x3a3f48, [[41.6, 5.6], [70.4, 5.6], [41.6, 26.4], [70.4, 26.4]].map(([x, y]) => gc(.7, .8, x, y, 16.1, AX_Z, 8)));
+const vs = [];for(let i = 0; i < 4; i++)vs.push(gb(22, .5, .4, 60, 1.2 + i*.9, 17.2));greeble(machG, C.dark, vs);
+const ro = [];for(let x = 90; x <= 118; x += 4)ro.push(gc(.35, 22, x, 17.2, -10, AX_Z, 8));greeble(scene, C.steel, ro);
+greeble(machG, C.dark, [48.5, 53, 57.5].map(y => gc(3.4, 1, 42, y, -28, [0, 0, 0], 12)));
+greeble(scene, YEL, [gb(96, .8, .8, 22, 73.6, -46.3)]);greeble(scene, 0x3a3f48, [-26, 22, 70].flatMap(x => [76.5, 123.5].map(y => gc(.6, .8, x, y, -46.1, AX_Z, 8))));
+wire([[22,74,-51],[22,40,-52.5],[24,6,-52],[30,.8,-50]], .8, scene);greeble(scene, C.steel, [gb(14, 1.8, .3, 22, 71.2, -46)]);
+
+const cl = [], AXE = (...p) => cl.push(...p);
+AXE(-70,-4,0,-70,62,0);AXE(-86,30,0,-54,30,0);AXE(60,42,-10,60,78,-10);AXE(10,20,-10,40,20,-10);AXE(22,70,-46,22,130,-46);AXE(-30,100,-46,74,100,-46);AXE(48,7,16,48,21,16);AXE(41,14,16,55,14,16);
+const clg = new T.BufferGeometry();clg.setAttribute('position', new T.Float32BufferAttribute(cl, 3));
+const clm = new T.LineDashedMaterial({color:0x9fd8ff, dashSize:5, gapSize:1.5, transparent:true}), cll = new T.LineSegments(clg, clm);cll.computeLineDistances();scene.add(cll);
+
+// Grand écran mural 3D : affiche les fiches du Parcours (Lettre A)
+solid(B(100, 52, 3), C.dark, scene, 22, 100, -48);solid(B(40, 20, 1.5), C.steel, scene, 22, 100, -50.8);
+for(const x of [-2, 46]){solid(B(3, 76, 3), C.steel, scene, x, 38, -51);solid(B(10, 1.5, 10), C.dark, scene, x, .75, -51);}
+solid(B(52, 3, 3), C.steel, scene, 22, 68, -51);solid(B(20, 3, 3), C.dark, scene, 22, 126.5, -48);solid(cyl(1.2, 1.2, 1.6, 10), 0x111111, scene, 22, 126.5, -46.2, AX_Z);
+const scrCv = document.createElement('canvas');scrCv.width = 1024;scrCv.height = 512;
+const scrTex = new T.CanvasTexture(scrCv), scrMesh = new T.Mesh(new T.PlaneGeometry(94, 46), new T.MeshBasicMaterial({map:scrTex}));
+scrMesh.position.set(22, 100, -46.4);scene.add(scrMesh);
+const scr = {code:'02 — PARCOURS (LETTRE A)', text:'', key:''}, MONO = 'ui-monospace,Menlo,Consolas,monospace';
+function drawScreen(){
+ const key = mach.text + '|' + scr.code + '|' + scr.text + '|' + ticketNo + '|' + (mach.prog*60 | 0);if(key === scr.key)return;scr.key = key;
+ const g = scrCv.getContext('2d');g.fillStyle = '#07182b';g.fillRect(0, 0, 1024, 512);g.strokeStyle = '#1f5f9e';g.lineWidth = 2;g.strokeRect(14, 14, 996, 484);
+ g.fillStyle = '#8fd0ff';g.font = '600 28px ' + MONO;g.fillText('02 — PARCOURS · LETTRE A', 40, 64);g.textAlign = 'right';g.fillText('FICHE N° ' + String(ticketNo).padStart(3, '0'), 984, 64);g.textAlign = 'left';
+ g.fillStyle = mach.lamp === 0xb8bec7 ? '#6b7a8c' : '#' + mach.lamp.toString(16).padStart(6, '0');g.beginPath();g.arc(52, 112, 9, 0, TAU);g.fill();
+ g.fillStyle = '#ff985c';g.font = '700 24px ' + MONO;g.fillText(scr.code + '  ·  ' + mach.text, 74, 120);
+ g.fillStyle = '#fff';g.font = '40px Georgia,serif';wrapText(g, scr.text ? scr.text + (mach.text === 'ÉDITION' ? ' ▌' : '') : 'En attente d’une expérience de terrain…', 40, 198, 944, 56);
+ g.fillStyle = '#16324f';g.fillRect(40, 452, 944, 14);g.fillStyle = '#ff6a1a';g.fillRect(40, 452, 944*mach.prog, 14);scrTex.needsUpdate = true;
+}
+NSTATIC = solids.length;
+
+// Cotes 2D
+const dimEls = [], dimMat = new T.LineBasicMaterial({color:0x9fd8ff, transparent:true});
+function addDim(p1, p2, off){
+ const a = p1.clone().add(off), b = p2.clone().add(off), dir = b.clone().sub(a).normalize(), side = off.clone().normalize(), tk = dir.clone().add(side).multiplyScalar(1.6);
+ const ext = off.clone().normalize().multiplyScalar(2), pts = [p1, a.clone().add(ext), p2, b.clone().add(ext), a, b, a.clone().sub(tk), a.clone().add(tk), b.clone().sub(tk), b.clone().add(tk)];
+ scene.add(new T.LineSegments(new T.BufferGeometry().setFromPoints(pts), dimMat));
+ const el = document.createElement('div');el.className = 'dim';el.textContent = Math.round(p1.distanceTo(p2) * 10);$('dims').appendChild(el);
+ dimEls.push({el, pos:a.clone().add(b).multiplyScalar(.5)});
+}
+addDim(new T.Vector3(35, 0, 15), new T.Vector3(85, 0, 15), new T.Vector3(0, -10, 0));
+addDim(new T.Vector3(35, 0, 15), new T.Vector3(35, 70, 15), new T.Vector3(-26, 0, 0));
+addDim(new T.Vector3(-70, 0, -32), new T.Vector3(35, 0, -32), new T.Vector3(0, -22, 0));
+
+/* ═════ 4. CAMÉRA & SCROLL : fiche 2D → cartes Parcours → 3D ═════ */
+const view = {th:HOME_VIEW.th, ph:HOME_VIEW.ph, r:HOME_VIEW.r, target:HOME_VIEW.target.clone()};
+function resize(){
+ const w = vp.clientWidth, h = vp.clientHeight;renderer.setSize(w, h, false);persp.aspect = w / h;persp.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(vp);
+
+const sm = (a, b, x) => {x = clamp((x - a) / (b - a), 0, 1);return x*x*(3 - 2*x);};
+const off = {th:0, ph:0}, base = {th:0, ph:0}, FRONT = new T.Vector3(11, 52, 0);
+let Ps = 0, gridOn = true, zf = 1, fillK = 0, dO = 1, lab = '';
+const scrollP = () => {const m = document.documentElement.scrollHeight - innerHeight;return m > 0 ? clamp(scrollY / m, 0, 1) : 0;};
+const LABELS = [
+ [.22, 'Plan P-02 · Lettre A · projection 2D'],
+ [.54, '02.1 · Stages d’observation WEX (IBPT, AfricaMuseum, MSF)'],
+ [.84, '02.2 · Encadrement de stages (Action Sport)'],
+ [2, '3D · Parcours interactif — glisser pour orbiter']
+];
+const BG0 = new T.Color(0x0d3f78), BG1 = new T.Color(0xeef1f5), E0 = new T.Color(0xe3f2ff), E1 = new T.Color(0x111111), bg = new T.Color(), em = new T.Color();
+const camT = new T.PerspectiveCamera(2.5, 1, 1, 9000), camR = new T.PerspectiveCamera(2.5, 1, 1, 9000);
+let mr = {x:0, y:0, w:1, h:1}, rT = mr, rR = mr, sideS = 0;
+const mix = (a, b, t) => Math.round(lerp(a, b, t));
+const shrink = (r, k) => ({x:r.x + r.w*(1 - k)/2, y:r.y + r.h*(1 - k)/2, w:r.w*k, h:r.h*k});
+const place = (el, r, o) => {el.style.cssText = `left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;opacity:${o}`;};
+const sideCam = (c, tg, dir, up, Hv, a) => {const d = Hv / (2*Math.tan(1.25*DEG));c.aspect = a;c.up.copy(up);c.position.copy(tg).addScaledVector(dir, d);c.near = d*.3;c.far = d*3;c.lookAt(tg);c.updateProjectionMatrix();c.updateMatrixWorld();};
+
+function updateCard(el, start, end){
+ const fadeIn = sm(start, start + .055, Ps);
+ const fadeOut = 1 - sm(end - .055, end, Ps);
+ const op = fadeIn * fadeOut;
+ el.style.opacity = op.toFixed(3);
+ el.style.transform = `translateY(${(-50 + (1 - op) * 7).toFixed(2)}%)`;
+ el.classList.toggle('on', op > .35);
+}
+
+function applyScroll(){
+ const W = vp.clientWidth, Hh = vp.clientHeight, multi = W/Hh > 1.15, e1 = sm(.2, .74, Ps), re = sm(.18, .44, Ps), fov = lerp(2.5, 30, sm(.12, .82, Ps)), hud = sm(.87, .97, Ps), sd = sm(.5, .9, Ps), root = document.documentElement.style;
+ fillK = sm(.38, .82, Ps);dO = sm(.1, .16, Ps)*(1 - sm(.32, .52, Ps));sideS = multi ? 1 - sm(.18, .38, Ps) : 0;
+ const pad = (innerWidth < 720 ? 12 : 26) * (1 - sm(.45, .85, Ps)), m = pad + 24, SW = W - 2*m, SH = Hh - 2*m, fo = 1 - sm(.18, .36, Ps);
+ const A = multi ? {x:m + .02*SW, y:m + .36*SH, w:.64*SW, h:.6*SH} : {x:m, y:m, w:SW, h:SH}, bT = {x:m + .02*SW, y:m + .03*SH, w:.64*SW, h:.29*SH}, bR = {x:m + .7*SW, y:m + .36*SH, w:.28*SW, h:.36*SH};
+ mr = {x:lerp(A.x, 0, re), y:lerp(A.y, 0, re), w:lerp(A.w, W, re), h:lerp(A.h, Hh, re)};rT = shrink(bT, sideS);rR = shrink(bR, sideS);LAY = {m, SW, SH, multi, fo};
+ place($('vA'), A, fo);place($('vB'), bT, multi ? fo : 0);place($('vC'), bR, multi ? fo : 0);
+ root.setProperty('--pad', pad + 'px');root.setProperty('--sh', 1 - sm(.4, .68, Ps));root.setProperty('--hud', hud);root.setProperty('--hint', 1 - sm(0, .06, Ps));
+ bg.copy(BG0).lerp(BG1, fillK);renderer.setClearColor(bg, 1);em.copy(bg).convertSRGBToLinear();
+ root.setProperty('--bgc', '#' + bg.getHexString());root.setProperty('--fg', `rgb(${mix(207, 59, fillK)},${mix(230, 67, fillK)},${mix(255, 80, fillK)})`);
+ document.body.classList.toggle('hud', hud > .6);canvas.style.touchAction = Ps > .9 ? 'none' : 'pan-y';
+ const rv = sm(0, .14, Ps);dispMesh.visible = scrMesh.visible = rv > .9;if(paper)paper.mesh.visible = rv > .9;
+ for(const s of solids){s.mesh.visible = s.n >= NSTATIC ? rv > .5 : s.n < rv*NSTATIC;const mt = s.mesh.material, c0 = mt.userData.c0 || (mt.userData.c0 = mt.color.clone());mt.color.copy(c0).multiplyScalar(fillK);mt.emissive.copy(em);mt.emissiveIntensity = 1 - fillK;}
+ EDGE_MAT.transparent = true;EDGE_MAT.opacity = 1 - .4*fillK;EDGE_MAT.color.copy(E0).lerp(E1, fillK);dimMat.opacity = dO;dimMat.visible = dO > .01;clm.opacity = dO*.85;cll.visible = dO > .01;
+ floor.material.opacity = .18*sd;grid.material.transparent = true;grid.material.opacity = sd;grid.visible = gridOn && sd > .01;
+ const l = LABELS.find(x => Ps < x[0])[1];if(l !== lab){lab = l;$('vlabel').textContent = l;}
+ const a = mr.w / mr.h, r = Math.max(lerp(150, 178, re), 245 / a) * zf / (2*Math.tan(fov*DEG/2));
+ base.th = lerp(0, HOME_VIEW.th, e1);base.ph = lerp(0, HOME_VIEW.ph, e1);
+ view.r = r;view.th = base.th + off.th;view.ph = clamp(base.ph + off.ph, -.3, 1.55);view.target.lerpVectors(FRONT, HOME_VIEW.target, e1);
+ persp.aspect = a;persp.fov = fov;persp.near = r*.25;persp.far = r*3;persp.updateProjectionMatrix();
+ if(sideS > .02){const aT = rT.w / rT.h, aR = rR.w / rR.h;
+  sideCam(camT, new T.Vector3(11, 0, -4), new T.Vector3(0, 1, 0), new T.Vector3(0, 0, -1), Math.max(108, 235 / aT), aT);
+  sideCam(camR, new T.Vector3(0, 62, -2), new T.Vector3(1, 0, 0), new T.Vector3(0, 1, 0), Math.max(138, 100 / aR), aR);}
+ updateCard($('cardWex'), .24, .56);
+ updateCard($('cardAction'), .58, .85);
+}
+
+function renderViews(){
+ const W = vp.clientWidth, Hh = vp.clientHeight;renderer.autoClear = false;renderer.shadowMap.needsUpdate = Ps > .3;renderer.setScissorTest(false);renderer.setViewport(0, 0, W, Hh);renderer.clear();renderer.setScissorTest(true);
+ const draw = (c, r) => {if(r.w < 2 || r.h < 2)return;const y = Hh - r.y - r.h;renderer.setViewport(r.x, y, r.w, r.h);renderer.setScissor(r.x, y, r.w, r.h);renderer.render(scene, c);};
+ draw(cam, mr);if(sideS > .02){draw(camT, rT);draw(camR, rR);}
+}
+function updateCamera(){
+ const {th, ph, r, target} = view, cp = Math.cos(ph);
+ cam.position.set(target.x + r*cp*Math.sin(th), target.y + r*Math.sin(ph), target.z + r*cp*Math.cos(th));cam.lookAt(target);
+ cam.updateMatrixWorld();cam.matrixWorldInverse.copy(cam.matrixWorld).invert();
+}
+async function snap(th, ph){
+ const a = {...off};let d = th - base.th - a.th;d -= TAU * Math.round(d / TAU);
+ await tween(.8, e => {off.th = a.th + d*e;off.ph = lerp(a.ph, clamp(ph, -.3, 1.55) - base.ph, e);});
+}
+const zoom = f => {zf = clamp(zf*f, .2, 2.5);};
+
+/* ═════ 5. ROBOT : cinématique inverse, objet, machine ═════ */
+const pose = {p:new T.Vector3(...K.home.p), psi:K.home.psi, o:GRIP_OPEN};
+const mach = {speed:0, shake:0, prog:0, text:'PRÊT', lamp:0xb8bec7, a:0};
+let item = null, ticketNo = 0, paper = null, queuedExp = null;
+
+function solveRobot(){
+ const dx = pose.p.x - BASE.x, dz = pose.p.z - BASE.z, yaw = Math.atan2(dz, dx), r = Math.hypot(dx, dz), psi = pose.psi * DEG;
+ const wr = r - L3*Math.cos(psi), wy = pose.p.y - L3*Math.sin(psi) - SHOULDER_Y;
+ const d = clamp(Math.hypot(wr, wy), Math.abs(L1 - L2) + .5, L1 + L2 - .1), a = Math.atan2(wy, wr);
+ const t1 = a + Math.acos(clamp((L1*L1 + d*d - L2*L2) / (2*L1*d), -1, 1));
+ const ex = L1*Math.cos(t1), ey = L1*Math.sin(t1), t2 = Math.atan2(d*Math.sin(a) - ey, d*Math.cos(a) - ex);
+ turret.rotation.y = -yaw;shoulder.rotation.z = t1;elbow.rotation.z = t2 - t1;wrist.rotation.z = psi - t2;
+ fingers[0].position.z = -(pose.o + .8);fingers[1].position.z = pose.o + .8;
+}
+function drawDisplay(){
+ const g = dispCv.getContext('2d');g.fillStyle = '#14161a';g.fillRect(0, 0, 256, 96);
+ g.fillStyle = '#fff';g.font = '600 32px system-ui,sans-serif';g.fillText(mach.text, 14, 44);
+ g.fillStyle = '#3a3f48';g.fillRect(14, 62, 228, 14);g.fillStyle = '#ff6a1a';g.fillRect(14, 62, 228*mach.prog, 14);dispTex.needsUpdate = true;
+}
+function updateMachine(){
+ mach.a += mach.speed * dt;g1.rotation.z = mach.a;g2.rotation.z = -mach.a * 12 / 9 + .35;
+ machG.position.set(Math.sin(now*63)*mach.shake*.12, 0, Math.cos(now*71)*mach.shake*.08);
+ lamp.material.userData.c0 = new T.Color(mach.lamp);if(fillK > .6){lamp.material.emissive.setHex(mach.lamp === 0xb8bec7 ? 0 : mach.lamp);lamp.material.emissiveIntensity = .6;}
+ drawDisplay();drawScreen();
+}
+function spawnItem(idx){
+ const mesh = solid(SHAPES[idx % SHAPES.length](), ITEM_COLORS[idx % ITEM_COLORS.length], scene, -25, 14.2, 28);
+ mesh.scale.setScalar(.01);item = {mesh, mode:'rest'};
+}
+function updateItem(){
+ if(item && item.mode === 'held'){item.mesh.position.copy(pose.p);item.mesh.rotation.y = -Math.atan2(pose.p.z - BASE.z, pose.p.x - BASE.x);}
+}
+function wrapText(g, text, x, y, maxW, lh){
+ let line = '';
+ for(const w of text.split(' ')){const t = line + w + ' ';if(g.measureText(t).width > maxW && line){g.fillText(line, x, y);line = w + ' ';y += lh;}else line = t;}
+ g.fillText(line, x, y);
+}
+function makePaper(no, exp){
+ const cv = document.createElement('canvas');cv.width = 512;cv.height = 400;const tex = new T.CanvasTexture(cv);
+ const mesh = new T.Mesh(new T.PlaneGeometry(26, 20), new T.MeshBasicMaterial({map:tex, transparent:true}));
+ mesh.rotation.x = -Math.PI/2;mesh.position.set(72, 17.7, -10);scene.add(mesh);
+ const draw = text => {
+  const g = cv.getContext('2d');g.fillStyle = '#fff';g.fillRect(0, 0, 512, 400);g.strokeStyle = '#14161a';g.lineWidth = 4;g.strokeRect(2, 2, 508, 396);
+  g.fillStyle = '#0b5fb0';g.font = '700 30px system-ui,sans-serif';g.fillText(exp.title, 26, 56);
+  g.fillStyle = '#6b7280';g.font = '600 18px ui-monospace,monospace';g.fillText('02 PARCOURS (A) · FICHE N° ' + String(no).padStart(3, '0'), 26, 88);
+  g.fillStyle = '#14161a';g.font = '25px Georgia,serif';wrapText(g, text, 26, 134, 460, 34);tex.needsUpdate = true;
+ };
+ draw('');return {mesh, draw};
+}
+async function retire(p){await tween(.6, e => {p.mesh.position.y = 17.7 - 10*e;p.mesh.material.opacity = 1 - e;}, linear);scene.remove(p.mesh);}
+
+/* ═════ 6. SÉQUENCES ═════ */
+async function armTo(k, d, ease){
+ const a = pose.p.clone(), b = new T.Vector3(...K[k].p), s0 = pose.psi, s1 = K[k].psi;
+ await tween(d, e => {pose.p.lerpVectors(a, b, e);pose.psi = lerp(s0, s1, e);}, ease);
+}
+const grip = (to, d) => {const o = pose.o;return tween(d, e => {pose.o = lerp(o, to, e);});};
+async function throwItem(){
+ item.mode = 'fly';const m = item.mesh, p0 = m.position.clone();
+ const v = new T.Vector3((HOPPER.x - p0.x)/FLIGHT, (HOPPER.y - p0.y + .5*GRAV*FLIGHT*FLIGHT)/FLIGHT, (HOPPER.z - p0.z)/FLIGHT);
+ await tween(FLIGHT, e => {const t = e*FLIGHT;m.position.set(p0.x + v.x*t, p0.y + v.y*t - .5*GRAV*t*t, p0.z + v.z*t);m.rotation.x += .12;m.rotation.z += .09;}, linear);
+ await tween(.35, e => {m.position.set(HOPPER.x, HOPPER.y - 22*e, HOPPER.z);m.scale.setScalar(1 - .45*e);}, easeIn);
+ scene.remove(m);solids.splice(solids.findIndex(s => s.mesh === m), 1);item = null;
+}
+async function runMachine(exp){
+ mach.text = 'ANALYSE';scr.code = exp.code;scr.text = '';mach.lamp = 0xffb020;log('Traitement : ' + exp.title + '…');
+ await tween(1.3, e => {const k = Math.min(1, e*4);mach.speed = 7*k;mach.shake = (rm ? 0 : 2.0)*k;mach.prog = e*.5;}, linear);
+ mach.text = 'ÉDITION';mach.shake = rm ? 0 : .7;ticketNo++;
+ if(paper)retire(paper);paper = makePaper(ticketNo, exp);const cur = paper;
+ await tween(2.5, e => {cur.mesh.position.x = lerp(72, 100, e);scr.text = exp.text.slice(0, Math.floor(exp.text.length*e));cur.draw(scr.text);mach.prog = .5 + .5*e;}, linear);
+ log('Fiche [' + exp.title + '] : ' + exp.text + ' (' + exp.url + ')', 'ok');
+ mach.shake = 0;await tween(.7, e => {mach.speed = 7*(1 - e);}, linear);
+ mach.text = 'VALIDÉ';mach.lamp = 0x22c55e;await wait(.8);mach.text = 'PRÊT';mach.lamp = 0xb8bec7;mach.prog = 0;
+}
+let busy = false, auto = !rm;
+async function cycle(forceIdx){
+ const idx = Number.isInteger(forceIdx) ? forceIdx : (queuedExp !== null ? queuedExp : ticketNo % EXPERIENCES.length);
+ queuedExp = null;
+ const exp = EXPERIENCES[idx % EXPERIENCES.length];
+ busy = true;$('bGo').disabled = true;log('Commande : LANCER (' + exp.title + ')');
+ spawnItem(idx);await tween(.35, e => {item.mesh.scale.setScalar(.01 + .99*e);}, easeOut);
+ await armTo('above', .75);await grip(GRIP_OPEN, .1);await armTo('grab', .38);
+ log('Saisie du module : ' + exp.code);await grip(GRIP_HOLD, .22);item.mode = 'held';
+ await armTo('lift', .42);await armTo('wind', .55);await armTo('throw', .26, easeIn);
+ grip(GRIP_OPEN, .12);log('Envoi vers la trémie.');
+ const back = (async () => {await armTo('follow', .3, easeOut);await armTo('home', .85);})();
+ await throwItem();
+ await Promise.all([back, runMachine(exp)]);
+ busy = false;$('bGo').disabled = false;
+ if(queuedExp !== null){cycle(queuedExp);return;}
+ if(auto){await wait(1.1);if(auto && !busy)cycle();}
+}
+
+function showExpIn3D(idx){
+ setDrawer(false);
+ scrollTo({top:document.documentElement.scrollHeight, behavior:'smooth'});
+ if(busy){queuedExp = idx;log('Expérience mise en file : ' + EXPERIENCES[idx].title);}
+ else cycle(idx);
+}
+
+/* ═════ 7. INTERFACE CAO & DOSSIER PARCOURS ═════ */
+function setDrawer(open){
+ $('drawer').classList.toggle('open', open);
+ $('drawerBack').classList.toggle('open', open);
+ $('fab').setAttribute('aria-expanded', String(open));
+}
+$('fab').onclick = () => setDrawer(!$('drawer').classList.contains('open'));
+$('bDossier').onclick = () => setDrawer(true);
+$('heroOpen').onclick = () => setDrawer(true);
+$('drClose').onclick = () => setDrawer(false);
+$('drawerBack').onclick = () => setDrawer(false);
+document.addEventListener('keydown', e => {if(e.key === 'Escape')setDrawer(false);});
+document.querySelectorAll('.proj-btn').forEach(btn => {
+ btn.onclick = () => showExpIn3D(Number(btn.dataset.exp));
+});
+
+const ptrs = new Map();let pinch = 0;
+const pd = () => {const a = [...ptrs.values()];return a.length < 2 ? 0 : Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y);};
+canvas.addEventListener('pointerdown', e => {canvas.setPointerCapture(e.pointerId);ptrs.set(e.pointerId, {x:e.clientX, y:e.clientY});pinch = pd();});
+canvas.addEventListener('pointermove', e => {
+ const p = ptrs.get(e.pointerId);if(!p)return;const dx = e.clientX - p.x, dy = e.clientY - p.y;p.x = e.clientX;p.y = e.clientY;
+ if(ptrs.size === 1 && Ps > .9){off.th -= dx*.006;off.ph = clamp(off.ph + dy*.006, -1, 1);}
+ else if(ptrs.size === 2){const d = pd();if(pinch && d)zoom(pinch/d);pinch = d;}
+});
+const up = e => ptrs.delete(e.pointerId);canvas.addEventListener('pointerup', up);canvas.addEventListener('pointercancel', up);
+canvas.addEventListener('wheel', e => {if(e.ctrlKey){e.preventDefault();zoom(Math.exp(e.deltaY*.01));}}, {passive:false});
+canvas.addEventListener('keydown', e => {
+ const k = {ArrowLeft:[.05,0], ArrowRight:[-.05,0], ArrowUp:[0,-.04], ArrowDown:[0,.04]}[e.key];
+ if(k){off.th += k[0]*4;off.ph = clamp(off.ph + k[1]*4, -1, 1);e.preventDefault();}else if(e.key === '+' || e.key === '=')zoom(.88);else if(e.key === '-')zoom(1.14);
+});
+document.querySelectorAll('#cube div').forEach(f => f.onclick = () => {const [a, b] = f.dataset.v.split(',').map(Number);snap(a, b);});
+const toggleGrid = () => {gridOn = !gridOn;$('bGrid').setAttribute('aria-pressed', gridOn);};
+const toggleAuto = () => {auto = !auto;$('bAuto').setAttribute('aria-pressed', auto);if(auto && !busy)cycle();};
+const goHome = () => snap(HOME_VIEW.th, HOME_VIEW.ph);
+$('bGrid').onclick = toggleGrid;$('bTop').onclick = () => scrollTo({top:0, behavior:'smooth'});$('bAuto').onclick = toggleAuto;$('bGo').onclick = () => {if(!busy)cycle();};$('home').onclick = goHome;
+
+const CMDS = {
+ lancer:() => {if(busy)log('Un cycle est déjà en cours.');else cycle();},
+ parcours:() => setDrawer(true),
+ dossier:() => setDrawer(true),
+ ibpt:() => showExpIn3D(0),
+ africa:() => showExpIn3D(1),
+ africamuseum:() => showExpIn3D(1),
+ msf:() => showExpIn3D(2),
+ telecom:() => showExpIn3D(2),
+ action:() => showExpIn3D(3),
+ actionsport:() => showExpIn3D(3),
+ eeb3:() => showExpIn3D(4),
+ auto:toggleAuto, grille:toggleGrid, iso:goHome, zoom:goHome,
+ dessus:() => snap(0, 1.5), face:() => snap(0, 0), droite:() => snap(Math.PI/2, 0), gauche:() => snap(-Math.PI/2, 0),
+ fiche:() => scrollTo({top:0, behavior:'smooth'}), rendu:() => scrollTo({top:document.documentElement.scrollHeight, behavior:'smooth'}),
+ aide:() => log('Commandes : PARCOURS, IBPT, AFRICA, MSF, ACTION, EEB3, LANCER, AUTO, GRILLE, ISO, DESSUS, FACE, DROITE, GAUCHE, FICHE, RENDU.')
+};
+$('cin').addEventListener('keydown', e => {
+ if(e.key !== 'Enter')return;e.stopPropagation();
+ const raw = e.currentTarget.value.trim();e.currentTarget.value = '';if(!raw)return;
+ const k = raw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').split(/\s+/)[0];
+ log('Commande : ' + raw.toUpperCase());CMDS[k] ? CMDS[k]() : log('Commande inconnue. Tapez AIDE.');
+});
+
+const UCS = [['ux', 'tx', new T.Vector3(1, 0, 0)], ['uy', 'ty', new T.Vector3(0, 0, -1)], ['uz', 'tz', new T.Vector3(0, 1, 0)]];
+const V = new T.Vector3();
+function updateHUD(){engage();
+ for(const [l, t, v] of UCS){V.copy(v).transformDirection(cam.matrixWorldInverse);
+  const x = 24 + V.x*34, y = 56 - V.y*34;$(l).setAttribute('x2', x);$(l).setAttribute('y2', y);$(t).setAttribute('x', x + 3);$(t).setAttribute('y', y - 3);}
+ $('cube').style.transform = `rotateX(${-view.ph}rad) rotateY(${-view.th}rad)`;
+ for(const d of dimEls){V.copy(d.pos).project(cam);d.el.style.opacity = dO;d.el.style.transform = `translate(${mr.x + (V.x*.5 + .5)*mr.w - 12}px,${mr.y + (-V.y*.5 + .5)*mr.h - 9}px)`;}
+ const p = pose.p;$('coords').textContent = `X ${(p.x*10).toFixed(1)}   Y ${(-p.z*10).toFixed(1)}   Z ${(p.y*10).toFixed(1)}   mm`;
+}
+
+/* ═════ ACCROCHE : nomenclature, repères, rail de navigation ═════ */
+let LAY = {m:50, SW:1, SH:1, multi:false, fo:1};
+const PARTS = [
+ [1,'Bras 6 axes · Action','RB-01',[-70,40,0],[-34,-46]],
+ [2,'Armoire · WEX EEB3','AE-02',[-58,32,-23],[-6,-62]],
+ [3,'Socle · Expériences','PD-03',[-25,6,35],[-34,-58]],
+ [4,'Trémie · Terrain','TR-04',[46,60,6],[-40,-26]],
+ [5,'Console · Contrôle','EC-05',[62,34,16],[34,-26]],
+ [6,'Moteur · Énergie','MT-06',[24,20,-3],[-30,-48]],
+ [7,'Sortie · Fiches A','BS-07',[112,19,3.5],[14,-46]],
+ [8,'Balise · Statut','TL-08',[79,53,8],[30,-34]],
+ [9,'Écran · Parcours A','EA-09',[-2,112,-46],[-34,-12]]
+];
+const NS = 'http://www.w3.org/2000/svg', E3 = new T.Vector3(), bs = document.createElementNS(NS, 'svg');
+bs.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible';vp.appendChild(bs);
+for(const p of PARTS){p.g = document.createElementNS(NS, 'g');p.g.setAttribute('class', 'bal');p.g.innerHTML = '<line/><circle class="p" r="2.2"/><circle class="c" r="9"/><text dy="3.5">' + p[0] + '</text>';bs.appendChild(p.g);}
+const bom = document.createElement('div');bom.id = 'bom';bom.innerHTML = '<h4>NOMENCLATURE · P-02</h4>' + PARTS.map(p => `<div><b>${p[0]}</b>${p[1]}<em>${p[2]}</em></div>`).join('');vp.appendChild(bom);
+const rail = document.createElement('nav');rail.id = 'rail';rail.setAttribute('aria-label', 'Chapitres');
+const CH = [['Plan 02', 0], ['Stages WEX', .38], ['Action Sport', .70], ['Rendu 3D', .95]];
+rail.innerHTML = CH.map((c, i) => `<button type="button" data-i="${i}"><span>${c[0]}</span><i></i></button>`).join('') + '<div id="pct">0%</div>';$('app').appendChild(rail);
+rail.querySelectorAll('button').forEach(b => b.onclick = () => scrollTo({top:CH[b.dataset.i][1]*(document.documentElement.scrollHeight - innerHeight), behavior:'smooth'}));
+let railIdx = -1, pctTxt = '';
+function engage(){
+ const bo = sm(.1, .17, Ps)*(1 - sm(.2, .36, Ps)), heroOp = 1 - sm(0, .055, Ps), root = document.documentElement.style;
+ root.setProperty('--hero', heroOp);
+ $('hero').classList.toggle('off', heroOp < .15);
+ for(const p of PARTS){E3.set(...p[3]).project(cam);const x = mr.x + (E3.x*.5 + .5)*mr.w, y = mr.y + (-E3.y*.5 + .5)*mr.h, bx = x + p[4][0], by = y + p[4][1], c = p.g.children;
+  p.g.setAttribute('opacity', bo);c[0].setAttribute('x1', x);c[0].setAttribute('y1', y);c[0].setAttribute('x2', bx);c[0].setAttribute('y2', by);
+  c[1].setAttribute('cx', x);c[1].setAttribute('cy', y);c[2].setAttribute('cx', bx);c[2].setAttribute('cy', by);c[3].setAttribute('x', bx);c[3].setAttribute('y', by);}
+ place(bom, {x:LAY.m + .7*LAY.SW, y:LAY.m + .03*LAY.SH, w:.28*LAY.SW, h:.29*LAY.SH}, LAY.multi ? LAY.fo*sm(.08, .15, Ps) : 0);
+ const i = Ps < .22 ? 0 : Ps < .57 ? 1 : Ps < .86 ? 2 : 3;
+ if(i !== railIdx){railIdx = i;rail.querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i));}
+ const t = Math.round(Ps*100) + '%';if(t !== pctTxt){pctTxt = t;$('pct').textContent = t;}
+}
+
+/* ═════ 8. BOUCLE ═════ */
+let last = 0;
+function frame(t){
+ requestAnimationFrame(frame);dt = Math.min(.05, (t - last) / 1000);last = t;now += dt;
+ const run = pending;pending = [];run.forEach(f => f());
+ const P = scrollP();Ps = rm ? P : Ps + (P - Ps)*Math.min(1, dt*7);
+ if(Ps < .9 && !ptrs.size){const k = Math.pow(.88, dt*60);off.th *= k;off.ph *= k;}
+ applyScroll();
+ solveRobot();updateItem();updateMachine();updateCamera();updateHUD();renderViews();
+}
+document.addEventListener('visibilitychange', () => {last = performance.now();});
+log('02 — PARCOURS (Lettre A) chargé. Tapez PARCOURS, IBPT, AFRICA, MSF, ACTION ou AIDE.');
+{const sl = $('sheetline');[['t', '12345678'], ['b', '12345678'], ['l', 'ABCD'], ['r', 'ABCD']].forEach(([c, t]) => {const d = document.createElement('div');d.className = 'zs ' + c;d.innerHTML = [...t].map(x => '<span>' + x + '</span>').join('');sl.appendChild(d);});}
+$('bAuto').setAttribute('aria-pressed', auto);resize();last = performance.now();requestAnimationFrame(frame);
+if(auto)setTimeout(cycle, 900);
+</script>
+</body>
+</html>
